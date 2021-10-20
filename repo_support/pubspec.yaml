@@ -1,0 +1,22 @@
+name: build_flutter_repo_support
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: '>=2.14.0 <3.0.0'
+
+dependencies:
+  process_run: '>=0.10.0'
+  tekartik_common_utils:
+    git:
+      url: git://github.com/tekartik/common_utils.dart
+      ref: null_safety
+    version: '>=0.13.2'
+
+dev_dependencies:
+  test: '>=1.0.0'
+  dev_test: '>=0.13.4-dev.1'
+
+dependency_overrides:
+#  tekartik_build_utils:
+#    path: ../../../tekartik/build_utils.dart
