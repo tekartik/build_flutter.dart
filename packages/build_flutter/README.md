@@ -10,8 +10,8 @@ In `pubspec.yaml`:
 dev_dependencies:
   tekartik_build_flutter:
     git: 
-        url: git://github.com/tekartik/build_flutter.dart
-        ref: null_safety
+        url: https://github.com/tekartik/build_flutter.dart
+        ref: dart2_3
         path: packages/build_flutter
     version: '>=0.7.9'
 ```
