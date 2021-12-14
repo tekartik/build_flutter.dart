@@ -19,8 +19,8 @@ String get buildPlatformCurrent {
   }
 }
 
-Future<void> createProjectAndCheckoutFromGit(String path,
-    {String? platform}) async {
+/// Force re-creating a project
+Future<void> createProject(String path, {String? platform}) async {
   platform ??= buildPlatformCurrent;
   var shell = Shell(workingDirectory: path);
   try {
@@ -33,9 +33,22 @@ Future<void> createProjectAndCheckoutFromGit(String path,
   } catch (_) {}
 
   await shell.run('flutter create --platforms $platform .');
+}
 
+/// Create project and checkout from git
+Future<void> createProjectAndCheckoutFromGit(String path,
+    {String? platform}) async {
+  platform ??= buildPlatformCurrent;
+  await createProject(path, platform: platform);
+  await checkoutFromGit(path, platform: platform);
+}
+
+/// Create project and checkout from git
+Future<void> checkoutFromGit(String path, {String? platform}) async {
+  platform ??= buildPlatformCurrent;
   // Try git checkout
   try {
+    var shell = Shell(workingDirectory: path);
     await shell.run('git checkout $platform');
   } catch (_) {}
 }

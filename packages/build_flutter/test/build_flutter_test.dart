@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
-import 'package:tekartik_build_flutter/build_flutter_common.dart';
 import 'package:test/test.dart';
 
 void main() {
