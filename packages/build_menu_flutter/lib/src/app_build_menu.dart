@@ -5,13 +5,12 @@ import 'package:process_run/shell.dart' hide prompt;
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_test_menu_io/test_menu_io.dart';
 
-var appPath = '.';
 Future main(List<String> arguments) async {
   mainMenu(arguments, menuAppContent);
 }
 
 void menuAppContent({String path = '.'}) {
-  appPath = path;
+  var appPath = path;
   var appShell = Shell(workingDirectory: path);
 
   Map pubspec;
