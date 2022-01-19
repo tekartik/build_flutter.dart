@@ -50,6 +50,10 @@ Future<void> createProject(String path, {String? platform}) async {
   // Create directory
   await Directory(path).create(recursive: true);
 
+  if (buildPlatformsDesktopAll.contains(platform)) {
+    await shell.run('flutter config --enable-$platform-desktop');
+  }
+
   await shell.run('flutter create --platforms $platform .');
 }
 
