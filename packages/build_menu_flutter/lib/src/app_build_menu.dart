@@ -47,7 +47,7 @@ void menuAppContent({String path = '.'}) {
         await createProject(appPath);
       }
     });
-    for (var platform in buildPlatformsAll) {
+    for (var platform in buildSupportedPlatforms) {
       item('create platform project ($platform)', () async {
         if (await checkFlutterSupported()) {
           await createProject(appPath, platform: platform);
@@ -56,20 +56,20 @@ void menuAppContent({String path = '.'}) {
     }
   });
   menu('build', () {
-    item('build web', () async {
-      if (await checkFlutterSupported()) {
-        await appShell.run('flutter build web');
-      }
+    for (var platform in buildSupportedPlatforms) {
+      item('build $platform', () async {
+        if (await checkFlutterSupported()) {
+          await buildProject(appPath, platform: platform);
+        }
+      });
+    }
+  });
+  menu('run', () {
+    item('run desktop built', () async {
+      await runBuiltProject(appPath);
     });
-    item('build android', () async {
-      if (await checkFlutterSupported()) {
-        await appShell.run('flutter build apk');
-      }
-    });
-    item('build linux', () async {
-      if (await checkFlutterSupported()) {
-        await appShell.run('flutter build linux');
-      }
+    item('flutter run', () async {
+      await appShell.run('flutter run');
     });
   });
   item('list sub projects', () async {

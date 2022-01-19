@@ -1,3 +1,7 @@
+import 'dart:io';
+
+import 'package:tekartik_build_flutter/build_flutter.dart';
+
 var buildPlatformAndroid = 'android';
 var buildPlatformWeb = 'web';
 var buildPlatformIOS = 'ios';
@@ -12,4 +16,17 @@ var buildPlatformsAll = [
   buildPlatformWindows,
   buildPlatformMacOS,
   buildPlatformWeb
+];
+
+var buildPlatformsDesktopAll = [
+  buildPlatformLinux,
+  buildPlatformWindows,
+  buildPlatformMacOS,
+];
+
+var buildSupportedPlatforms = [
+  buildPlatformCurrent,
+  buildPlatformWeb,
+  if (Platform.isMacOS) buildPlatformIOS,
+  buildPlatformAndroid
 ];

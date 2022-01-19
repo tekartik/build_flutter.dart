@@ -2,5 +2,13 @@
 library tekartik_build_flutter;
 
 export 'src/build_flutter.dart'
-    show buildPlatformCurrent, createProjectAndCheckoutFromGit, createProject;
+    show
+        buildPlatformCurrent,
+        createProjectAndCheckoutFromGit,
+        createProject,
+        buildProject,
+        runBuiltProject,
+        platformExeDir,
+        deleteDir,
+        deleteFile;
 export 'src/build_flutter_common.dart';
