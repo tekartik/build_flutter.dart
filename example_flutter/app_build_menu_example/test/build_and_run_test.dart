@@ -23,5 +23,7 @@ void main() {
           .run(join('.', 'app_build_menu_example'));
       expect(File(markerPath).existsSync(), isTrue);
     }
-  });
+  },
+      skip: !(Platform.isLinux || Platform.isWindows),
+      timeout: const Timeout(Duration(minutes: 10)));
 }
