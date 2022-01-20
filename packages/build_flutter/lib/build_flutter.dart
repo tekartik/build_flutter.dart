@@ -10,5 +10,6 @@ export 'src/build_flutter.dart'
         runBuiltProject,
         platformExeDir,
         deleteDir,
-        deleteFile;
+        deleteFile,
+        getBuildProjectAppFilename;
 export 'src/build_flutter_common.dart';

@@ -8,6 +8,7 @@ import 'build_flutter_common.dart';
 
 var _linuxExeDir = join('build', 'linux', 'x64', 'release', 'bundle');
 var _windowsExeDir = join('build', 'windows', 'runner', 'Release');
+var _macOSExeDir = join('build', 'macos', 'Build', 'Products', 'Release');
 
 /// Safe delete a directory
 Future<void> deleteDir(String path) async {
@@ -24,7 +25,9 @@ Future<void> deleteFile(String path) async {
 }
 
 /// release exe dir (linux and windows for now)
-String get platformExeDir => Platform.isLinux ? _linuxExeDir : _windowsExeDir;
+String get platformExeDir => Platform.isLinux
+    ? _linuxExeDir
+    : (Platform.isMacOS ? _macOSExeDir : _windowsExeDir);
 
 /// Current build platform
 /// Desktop only
@@ -69,6 +72,8 @@ Future<String> getBuildProjectAppFilename(String path) async {
   var appName = (await pathGetPubspecYamlMap(path))['name'] as String;
   if (Platform.isWindows) {
     appName = '$appName.exe';
+  } else if (Platform.isMacOS) {
+    appName = '$appName.app';
   }
   return appName;
 }
