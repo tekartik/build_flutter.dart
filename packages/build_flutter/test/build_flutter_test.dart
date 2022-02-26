@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
-import 'package:tekartik_build_flutter/build_flutter_common.dart';
 import 'package:test/test.dart';
 
 void main() {
@@ -11,7 +10,9 @@ void main() {
       var dir = join('.dart_tool', 'tekartik_build_flutter', 'test', 'app1');
       await Directory(dir).create(recursive: true);
       await createProjectAndCheckoutFromGit(dir);
-    });
+    },
+        skip: !(Platform.isLinux || Platform.isWindows || Platform.isMacOS),
+        timeout: const Timeout(Duration(minutes: 10)));
     test('buildPlatformCurrent', () {
       var platform = buildPlatformCurrent;
       if (Platform.isWindows) {

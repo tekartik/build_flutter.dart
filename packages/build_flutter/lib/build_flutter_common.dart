@@ -5,4 +5,5 @@ export 'src/build_flutter_common.dart'
         buildPlatformMacOS,
         buildPlatformLinux,
         buildPlatformIOS,
-        buildPlatformAndroid;
+        buildPlatformAndroid,
+        buildPlatformsAll;
