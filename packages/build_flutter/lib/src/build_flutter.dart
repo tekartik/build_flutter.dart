@@ -63,7 +63,7 @@ Future<void> createProject(String path, {String? platform}) async {
 /// Run the released
 Future<void> runBuiltProject(String path) async {
   var appName = await getBuildProjectAppFilename(path);
-  var shell = Shell(workingDirectory: join(platformExeDir, path));
+  var shell = Shell(workingDirectory: join(path, platformExeDir));
   await shell.run(join('.', appName));
 }
 

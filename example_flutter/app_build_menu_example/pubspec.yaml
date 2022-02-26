@@ -35,8 +35,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
   tekartik_build_menu_flutter:
-    path: ../../packages/build_menu_flutter
+    git:
+      url: https://github.com/tekartik/build_flutter.dart
+      ref: dart2_3
+      path: packages/build_menu_flutter
+    version: '>=0.1.0'
+
 dependency_overrides:
+  tekartik_build_menu_flutter:
+    path: ../../packages/build_menu_flutter
   tekartik_build_flutter:
     path: ../../packages/build_flutter
 dev_dependencies:
