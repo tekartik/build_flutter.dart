@@ -1,6 +1,6 @@
 name: tekartik_build_menu_flutter
 description: Build menu flutter
-version: 0.3.0
+version: 0.3.1
 publish_to: none
 
 environment:
@@ -16,7 +16,7 @@ dependencies:
       url: https://github.com/tekartik/build_flutter.dart
       ref: dart2_3
       path: packages/build_flutter
-    version: '>=0.7.9'
+    version: '>=1.0.2'
   uuid: '>=3.0.0-0'
   tekartik_test_menu_io:
     git:
