@@ -7,6 +7,10 @@ environment:
   sdk: '>=2.16.0-0 <3.0.0'
 
 dependencies:
+  path:
+  dev_test:
+  process_run:
+  args:
   tekartik_build_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
@@ -19,7 +23,11 @@ dependencies:
       url: https://github.com/tekartik/test_menu.dart
       ref: dart2_3
       path: test_menu_io
-
+  tekartik_test_menu:
+    git:
+      url: https://github.com/tekartik/test_menu.dart
+      ref: dart2_3
+      path: test_menu
 dependency_overrides:
   tekartik_build_flutter:
     path: ../build_flutter

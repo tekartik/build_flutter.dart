@@ -84,7 +84,8 @@ void menuAppContent({String path = '.'}) {
     await packageRunCi(path, options: PackageRunCiOptions(pubGetOnly: true));
   });
   item('pub_upgrade', () async {
-    await packageRunCi(path, options: PackageRunCiOptions(pubUpgradeOnly: true));
+    await packageRunCi(path,
+        options: PackageRunCiOptions(pubUpgradeOnly: true));
   });
   item('flutter clean', () async {
     if (await checkFlutterSupported()) {
