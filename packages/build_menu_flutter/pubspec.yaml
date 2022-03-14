@@ -1,10 +1,10 @@
 name: tekartik_build_menu_flutter
 description: Build menu flutter
-version: 0.2.0
+version: 0.3.0
 publish_to: none
 
 environment:
-  sdk: '>=2.15.0-0 <3.0.0'
+  sdk: '>=2.16.0-0 <3.0.0'
 
 dependencies:
   tekartik_build_flutter:

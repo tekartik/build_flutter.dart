@@ -83,8 +83,19 @@ Future<void> buildProject(String path,
     {String? target, String? platform}) async {
   var shell = Shell(workingDirectory: path);
   platform ??= buildPlatformCurrent;
+  var subcommandApk = 'apk';
+  var subcommandIpa = 'ipa';
+  String? subcommand;
+  if (platform == buildPlatformAndroid) {
+    subcommand = subcommandApk;
+  } else if (platform == buildPlatformIOS) {
+    subcommand = subcommandIpa;
+  } else {
+    // TODO handle other platform such as ios
+    subcommand = platform;
+  }
   await shell.run('''
-    flutter build $platform${target != null ? ' --target ${shellArgument(target)}' : ''}
+    flutter build $subcommand${target != null ? ' --target ${shellArgument(target)}' : ''}
     ''');
 }
 
