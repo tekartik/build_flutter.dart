@@ -3,15 +3,17 @@ import 'package:dev_test/package.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart' hide prompt;
 import 'package:tekartik_build_flutter/build_flutter.dart';
+import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_referenced_packages
 import 'package:tekartik_test_menu_io/test_menu_io.dart';
 
 Future main(List<String> arguments) async {
   mainMenu(arguments, menuAppContent);
 }
 
-void menuAppContent({String path = '.'}) {
+void menuAppContent({String path = '.', List<String>? flavors}) {
   var appPath = path;
   var appShell = Shell(workingDirectory: path);
+  var currentFlavor = listFirst(flavors);
 
   Map pubspec;
   var checkPubspec = () async {
@@ -41,6 +43,24 @@ void menuAppContent({String path = '.'}) {
     var pubspec = await checkPubspec;
     write('Package: ${pubspec['name']}');
   });
+  if (currentFlavor != null) {
+    menu('select flavor', () {
+      void dump() {
+        write('current flavor: $currentFlavor');
+      }
+
+      enter(() async {
+        dump();
+      });
+      for (var flavor in flavors!) {
+        item(flavor, () {
+          dump();
+          currentFlavor = flavor;
+          dump();
+        });
+      }
+    });
+  }
   menu('project', () {
     item('create current platform project ($buildPlatformCurrent)', () async {
       if (await checkFlutterSupported()) {
@@ -59,7 +79,8 @@ void menuAppContent({String path = '.'}) {
     for (var platform in buildSupportedPlatforms) {
       item('build $platform', () async {
         if (await checkFlutterSupported()) {
-          await buildProject(appPath, platform: platform);
+          await buildProject(appPath,
+              platform: platform, flavor: currentFlavor);
         }
       });
     }
@@ -71,6 +92,22 @@ void menuAppContent({String path = '.'}) {
     item('flutter run', () async {
       await appShell.run('flutter run');
     });
+    if (currentFlavor != null) {
+      item('flutter run --flavor <current>', () async {
+        await appShell.run('flutter run --flavor $currentFlavor');
+      });
+    }
+    for (var platform in buildPlatformsDesktopAll) {
+      item('flutter run -d $platform', () async {
+        await appShell.run('flutter run -d $platform');
+      });
+      if (currentFlavor != null) {
+        item('flutter run -d $platform --flavor <current>', () async {
+          await appShell
+              .run('flutter run -d $platform --flavor $currentFlavor');
+        });
+      }
+    }
   });
   item('list sub projects', () async {
     await recursivePackagesRun([path], action: (path) {

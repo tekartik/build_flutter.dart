@@ -80,7 +80,7 @@ Future<String> getBuildProjectAppFilename(String path) async {
 
 /// Recreate and build a project
 Future<void> buildProject(String path,
-    {String? target, String? platform}) async {
+    {String? target, String? platform, String? flavor}) async {
   var shell = Shell(workingDirectory: path);
   platform ??= buildPlatformCurrent;
   var subcommandApk = 'apk';
@@ -94,8 +94,10 @@ Future<void> buildProject(String path,
     // TODO handle other platform such as ios
     subcommand = platform;
   }
+  var supportsFlavor = (platform == buildPlatformAndroid) && flavor != null;
+
   await shell.run('''
-    flutter build $subcommand${target != null ? ' --target ${shellArgument(target)}' : ''}
+    flutter build $subcommand${target != null ? ' --target ${shellArgument(target)}' : ''}${supportsFlavor ? ' --flavor $flavor' : ''}
     ''');
 }
 
