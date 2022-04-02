@@ -64,8 +64,10 @@ void main() {
         expect(buildHostCurrent, 'linux');
       } else if (Platform.isMacOS) {
         expect(platform, buildPlatformMacOS);
-        expect(getBuildHostSupportedPlatforms(),
-            unorderedEquals([buildPlatformAndroid, buildPlatformWindows]));
+        expect(
+            getBuildHostSupportedPlatforms(),
+            unorderedEquals(
+                [buildPlatformAndroid, buildPlatformIOS, buildPlatformMacOS]));
         expect(buildHostCurrent, 'macos');
       }
     });
