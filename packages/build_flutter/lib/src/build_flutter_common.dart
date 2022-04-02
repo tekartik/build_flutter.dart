@@ -9,6 +9,10 @@ var buildPlatformWindows = 'windows';
 var buildPlatformMacOS = 'macos';
 var buildPlatformLinux = 'linux';
 
+var buildHostWindows = 'windows';
+var buildHostMacOS = 'macos';
+var buildHostLinux = 'linux';
+
 var buildPlatformsAll = [
   buildPlatformAndroid,
   buildPlatformIOS,
@@ -22,6 +26,12 @@ var buildPlatformsDesktopAll = [
   buildPlatformLinux,
   buildPlatformWindows,
   buildPlatformMacOS,
+];
+
+var buildHostsAll = [
+  buildHostLinux,
+  buildHostWindows,
+  buildHostMacOS,
 ];
 
 var buildSupportedPlatforms = [

@@ -30,14 +30,40 @@ String get platformExeDir => Platform.isLinux
     : (Platform.isMacOS ? _macOSExeDir : _windowsExeDir);
 
 /// Current build platform
+///
 /// Desktop only
-String get buildPlatformCurrent {
+String get buildPlatformCurrent => _buildHostBuildPlatform[buildHostCurrent]!;
+
+var _buildHostBuildPlatform = {
+  buildHostWindows: buildPlatformWindows,
+  buildHostLinux: buildPlatformLinux,
+  buildHostMacOS: buildPlatformMacOS,
+};
+
+var _buildHostSupportedBuildPlatforms = {
+  buildHostWindows: [buildPlatformWindows, buildPlatformAndroid],
+  buildHostLinux: [buildPlatformLinux, buildPlatformAndroid],
+  buildHostMacOS: [buildPlatformMacOS, buildPlatformAndroid, buildPlatformIOS],
+};
+
+/// Get the supported build platforms for the current host.
+List<String>? getBuildHostSupportedPlatforms(
+    {
+    // Default to buildFlatformCurrent, mainly used for testing
+    String? buildHost}) {
+  return _buildHostSupportedBuildPlatforms[buildHost ?? buildHostCurrent];
+}
+
+final buildHostCurrent = _buildHostCurrent;
+
+/// Current build host, cannot change
+String get _buildHostCurrent {
   if (Platform.isWindows) {
-    return buildPlatformWindows;
+    return buildHostWindows;
   } else if (Platform.isLinux) {
-    return buildPlatformLinux;
+    return buildHostLinux;
   } else if (Platform.isMacOS) {
-    return buildPlatformMacOS;
+    return buildHostMacOS;
   } else {
     throw UnsupportedError('Unsupported platform');
   }
