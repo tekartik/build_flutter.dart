@@ -13,5 +13,5 @@ dev_dependencies:
         url: https://github.com/tekartik/build_flutter.dart
         ref: dart2_3
         path: packages/build_menu_flutter
-    version: '>=0.1.0'
+    version: '>=0.3.0'
 ```

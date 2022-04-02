@@ -1,6 +1,6 @@
 name: tekartik_build_flutter
 description: Helper for building flutter project
-version: 1.0.1
+version: 1.0.3
 publish_to: none
 
 environment:
@@ -9,6 +9,8 @@ environment:
 dependencies:
   path: ^1.8.0
   process_run:
+  fs_shim:
+  collection:
   args:
   tekartik_common_utils:
     git:
@@ -16,6 +18,11 @@ dependencies:
       ref: dart2_3
     version: '>=0.13.2'
   dev_test:
+  tekartik_android_utils:
+    git:
+      url: https://github.com/tekartik/android_utils.dart
+      ref: dart2_3
+    version: '>=0.1.0'
 dev_dependencies:
   lints: ^1.0.0
   test: ^1.16.0
