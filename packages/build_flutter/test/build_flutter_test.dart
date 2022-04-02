@@ -48,7 +48,7 @@ void main() {
       expect(getBuildHostSupportedPlatforms(buildHost: buildHostLinux),
           unorderedEquals([buildPlatformAndroid, buildPlatformLinux]));
 
-      expect(buildHostCurrent, 'linux');
+      expect(buildHostsAll, contains(buildHostCurrent));
 
       expect(
           getBuildHostSupportedPlatforms(buildHost: buildHostMacOS),
