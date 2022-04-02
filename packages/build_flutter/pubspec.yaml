@@ -23,6 +23,12 @@ dependencies:
       url: https://github.com/tekartik/android_utils.dart
       ref: dart2_3
     version: '>=0.1.0'
+  tekartik_app_io_platform:
+    git:
+      url: https://github.com/tekartik/app_io_utils.dart
+      ref: dart2_3
+      path: packages/app_platform
+    version: '>=0.3.1'
 dev_dependencies:
   lints: ^1.0.0
   test: ^1.16.0

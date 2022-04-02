@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dev_test/build_support.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
+import 'package:tekartik_build_flutter/src/import.dart';
 
 import 'build_flutter_common.dart';
 
@@ -55,6 +56,9 @@ List<String>? getBuildHostSupportedPlatforms(
 }
 
 final buildHostCurrent = _buildHostCurrent;
+
+/// All supported platform for current host
+var buildHostSupportedPlatforms = getBuildHostSupportedPlatforms()!;
 
 /// Current build host, cannot change
 String get _buildHostCurrent {
@@ -144,3 +148,11 @@ Future<void> checkoutFromGit(String path, {String? platform}) async {
     await shell.run('git checkout $platform');
   } catch (_) {}
 }
+
+@Deprecated('moved')
+var getBuildSupportedPlatforms = [
+  buildPlatformCurrent,
+  buildPlatformWeb,
+  if (Platform.isMacOS) buildPlatformIOS,
+  buildPlatformAndroid
+];
