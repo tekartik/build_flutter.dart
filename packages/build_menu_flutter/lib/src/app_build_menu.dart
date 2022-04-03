@@ -3,7 +3,6 @@ import 'package:dev_test/package.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart' hide prompt;
 import 'package:tekartik_build_flutter/build_flutter.dart';
-import 'package:tekartik_build_flutter/flutter_project.dart';
 import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_referenced_packages
 import 'package:tekartik_test_menu_io/test_menu_io.dart';
 
@@ -85,18 +84,6 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
         }
       });
     }
-    menu('intl', () async {
-      item('fix intl json', () async {
-        var project = FlutterProject(appPath);
-        await project.intlFixJson();
-      });
-
-      item('generate dart file', () async {
-        var project = FlutterProject(appPath);
-        write(await project.intlGetLocales());
-        await project.intlGenerateFile();
-      });
-    });
   });
   menu('run', () {
     item('run desktop built', () async {
