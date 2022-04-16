@@ -13,10 +13,9 @@ Future<void> fbm(List<String> arguments) async {
   var appPath = result.rest;
 
   if (appPath.isEmpty) {
-    stderr.writeln('Missing path');
-    exit(1);
+    appPath = [Directory.current.path];
   }
-  mainMenu(arguments, () {
+  mainMenu(appPath.sublist(1), () {
     menuAppContent(path: appPath.first);
   });
 }

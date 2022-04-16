@@ -15,3 +15,13 @@ dev_dependencies:
         path: packages/build_menu_flutter
     version: '>=0.3.0'
 ```
+
+## fbm command
+
+To activate
+
+```shell
+flutter pub global activate -s path .
+```
+
+Run `fbm` to see the menu
