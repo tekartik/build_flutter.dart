@@ -42,9 +42,18 @@ var _buildHostBuildPlatform = {
 };
 
 var _buildHostSupportedBuildPlatforms = {
-  buildHostWindows: [buildPlatformWindows, buildPlatformAndroid],
-  buildHostLinux: [buildPlatformLinux, buildPlatformAndroid],
-  buildHostMacOS: [buildPlatformMacOS, buildPlatformAndroid, buildPlatformIOS],
+  buildHostWindows: [
+    buildPlatformWindows,
+    buildPlatformAndroid,
+    buildPlatformWeb
+  ],
+  buildHostLinux: [buildPlatformLinux, buildPlatformAndroid, buildPlatformWeb],
+  buildHostMacOS: [
+    buildPlatformMacOS,
+    buildPlatformAndroid,
+    buildPlatformIOS,
+    buildPlatformWeb
+  ],
 };
 
 /// Get the supported build platforms for the current host.
