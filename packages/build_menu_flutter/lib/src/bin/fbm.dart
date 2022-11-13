@@ -4,10 +4,10 @@ import 'package:args/args.dart';
 import 'package:tekartik_build_menu_flutter/app_build_menu.dart';
 
 Future<void> main(List<String> arguments) async {
-  await fbm(arguments);
+  fbm(arguments);
 }
 
-Future<void> fbm(List<String> arguments) async {
+void fbm(List<String> arguments) {
   var parser = ArgParser();
   var result = parser.parse(arguments);
   var appPath = result.rest;
