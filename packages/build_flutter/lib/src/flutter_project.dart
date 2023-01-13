@@ -28,9 +28,8 @@ class FlutterProject {
 
   bool get hasFlavors => flavors.isNotEmpty;
 
-  FlutterProject(
-      // posix pat ok
-      String path,
+  // windows/posix path ok
+  FlutterProject(String path,
       {
 
       /// Default to empty

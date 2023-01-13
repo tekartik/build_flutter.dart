@@ -21,7 +21,7 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
       pubspec = await pathGetPubspecYamlMap(path);
       return pubspec;
     } catch (_) {}
-    return {};
+    return <String, Object?>{};
   }();
 
   Future<bool> checkFlutterSupported() async {

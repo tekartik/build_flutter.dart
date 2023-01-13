@@ -4,7 +4,7 @@ version: 1.0.4
 publish_to: none
 
 environment:
-  sdk: '>=2.14.4 <3.0.0'
+  sdk: '>=2.18.0 <3.0.0'
 
 dependencies:
   path: ^1.8.0
@@ -12,6 +12,12 @@ dependencies:
   fs_shim:
   collection:
   args:
+  tekartik_lints_flutter:
+    git:
+      url: https://github.com/tekartik/common_flutter.dart
+      ref: dart2_3
+      path: packages/lints_flutter
+    version: '>=0.1.0'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
@@ -32,4 +38,3 @@ dependencies:
 dev_dependencies:
   lints: ^1.0.0
   test: ^1.16.0
-
