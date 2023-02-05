@@ -38,36 +38,55 @@ void main() {
     test('getBuildHostSupportedPlatforms', () {
       var platform = buildPlatformCurrent;
 
-      expect(getBuildHostSupportedPlatforms(buildHost: buildHostWindows),
-          unorderedEquals([buildPlatformAndroid, buildPlatformWindows]));
+      expect(
+          getBuildHostSupportedPlatforms(buildHost: buildHostWindows),
+          unorderedEquals(
+              [buildPlatformAndroid, buildPlatformWindows, buildPlatformWeb]));
       try {
         getBuildHostSupportedPlatforms(buildHost: 'dummy');
         fail('should fail');
       } catch (_) {}
 
-      expect(getBuildHostSupportedPlatforms(buildHost: buildHostLinux),
-          unorderedEquals([buildPlatformAndroid, buildPlatformLinux]));
+      expect(
+          getBuildHostSupportedPlatforms(buildHost: buildHostLinux),
+          unorderedEquals(
+              [buildPlatformAndroid, buildPlatformLinux, buildPlatformWeb]));
 
       expect(buildHostsAll, contains(buildHostCurrent));
 
       expect(
           getBuildHostSupportedPlatforms(buildHost: buildHostMacOS),
-          unorderedEquals(
-              [buildPlatformAndroid, buildPlatformIOS, buildPlatformMacOS]));
+          unorderedEquals([
+            buildPlatformAndroid,
+            buildPlatformIOS,
+            buildPlatformMacOS,
+            buildPlatformWeb
+          ]));
       if (Platform.isWindows) {
-        expect(getBuildHostSupportedPlatforms(),
-            unorderedEquals([buildPlatformAndroid, buildPlatformWindows]));
+        expect(
+            getBuildHostSupportedPlatforms(),
+            unorderedEquals([
+              buildPlatformAndroid,
+              buildPlatformWindows,
+              buildPlatformWeb
+            ]));
         expect(buildHostCurrent, 'windows');
       } else if (Platform.isLinux) {
-        expect(getBuildHostSupportedPlatforms(),
-            unorderedEquals([buildPlatformAndroid, buildPlatformLinux]));
+        expect(
+            getBuildHostSupportedPlatforms(),
+            unorderedEquals(
+                [buildPlatformAndroid, buildPlatformLinux, buildPlatformWeb]));
         expect(buildHostCurrent, 'linux');
       } else if (Platform.isMacOS) {
         expect(platform, buildPlatformMacOS);
         expect(
             getBuildHostSupportedPlatforms(),
-            unorderedEquals(
-                [buildPlatformAndroid, buildPlatformIOS, buildPlatformMacOS]));
+            unorderedEquals([
+              buildPlatformAndroid,
+              buildPlatformIOS,
+              buildPlatformMacOS,
+              buildPlatformWeb
+            ]));
         expect(buildHostCurrent, 'macos');
       }
     });

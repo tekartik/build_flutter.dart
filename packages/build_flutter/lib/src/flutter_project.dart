@@ -31,7 +31,6 @@ class FlutterProject {
   // windows/posix path ok
   FlutterProject(String path,
       {
-
       /// Default to empty
       List<String>? flavors,
       String? buildPlatform,
