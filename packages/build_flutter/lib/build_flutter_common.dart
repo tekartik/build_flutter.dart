@@ -6,4 +6,11 @@ export 'src/build_flutter_common.dart'
         buildPlatformLinux,
         buildPlatformIOS,
         buildPlatformAndroid,
-        buildPlatformsAll;
+        buildPlatformsAll,
+        buildHostsAll,
+        buildHostLinux,
+        buildHostMacOS,
+        buildHostWindows,
+        buildPlatformsDesktopAll,
+        // ignore: deprecated_member_use_from_same_package
+        buildSupportedPlatforms;

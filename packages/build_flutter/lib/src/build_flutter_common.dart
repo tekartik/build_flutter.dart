@@ -34,6 +34,7 @@ var buildHostsAll = [
   buildHostMacOS,
 ];
 
+@Deprecated('Use getBuildHostSupportedPlatforms')
 var buildSupportedPlatforms = [
   buildPlatformCurrent,
   buildPlatformWeb,

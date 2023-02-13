@@ -21,7 +21,7 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
       pubspec = await pathGetPubspecYamlMap(path);
       return pubspec;
     } catch (_) {}
-    return {};
+    return <String, Object?>{};
   }();
 
   Future<bool> checkFlutterSupported() async {
@@ -67,7 +67,7 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
         await createProject(appPath);
       }
     });
-    for (var platform in buildSupportedPlatforms) {
+    for (var platform in buildHostSupportedPlatforms) {
       item('create platform project ($platform)', () async {
         if (await checkFlutterSupported()) {
           await createProject(appPath, platform: platform);
@@ -76,7 +76,7 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
     }
   });
   menu('build', () {
-    for (var platform in buildSupportedPlatforms) {
+    for (var platform in buildHostSupportedPlatforms) {
       item('build $platform', () async {
         if (await checkFlutterSupported()) {
           await buildProject(appPath,

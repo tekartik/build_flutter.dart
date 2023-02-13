@@ -1,8 +1,11 @@
+import 'package:fs_shim/utils/path.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 import 'package:tekartik_android_utils/build_utils.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
+
+import 'import.dart';
 
 const defaultAppAndroidModule = 'app';
 
@@ -10,21 +13,24 @@ const buildTypeRelease = 'release';
 const buildTypeDebug = 'debug';
 
 class FlutterProject {
-  final String path;
+  /// The path
+  late final String path;
+
   // Default to 'app'
   late final String androidModule;
   late final String buildPlatform;
 
   /// Defatul to release
   late final String buildType;
+
   // Optional flavor
   late List<String> flavors;
 
   bool get hasFlavors => flavors.isNotEmpty;
 
-  FlutterProject(this.path,
+  // windows/posix path ok
+  FlutterProject(String path,
       {
-
       /// Default to empty
       List<String>? flavors,
       String? buildPlatform,
@@ -34,16 +40,21 @@ class FlutterProject {
     this.buildPlatform = buildPlatformCurrent;
     this.androidModule = androidModule ?? defaultAppAndroidModule;
     this.buildType = buildTypeRelease;
+    this.path = toNativePath(path);
   }
+
   // build/app/outputs/bundle/mainRelease/app-main-release.aab
   // build/app/outputs/flutter-apk/app-main-release.apk
   /// Single flavor, if any
   String? get flavor => listSingleOrNull(flavors);
 
-  String getAbsolutePath() => absolute(normalize(path));
+  String getAbsolutePath() => normalize(absolute((path)));
+
   String getAbsoluteApkPath() => join(getAbsolutePath(), getApkPath());
+
   String getAbsoluteAppBundlePath() =>
       join(getAbsolutePath(), getAppBundlePath());
+
   // To deprecate
   String getAbsoluteAabPath() => join(getAbsolutePath(), getAppBundlePath());
 
@@ -109,6 +120,10 @@ class FlutterProject {
 
 // 'build/app/outputs/bundle/customRelease/app-custom-release.aab';
 // _lowerCamelCaseWords(parts),
+
+  String getAbsolutePathFromRelative(String relative) {
+    return join(getAbsolutePath(), relative);
+  }
 }
 
 String _camelCaseWord(String word) {
@@ -134,21 +149,8 @@ String _lowerCamelCaseWords(List<String> words) {
   return words.first;
 }
 
-/*
-var lumiAppAndroidApkPath = 'build/app/outputs/flutter-apk/app-release.apk';
-
-var customLumiAppAndroidAabPath =
-    'build/app/outputs/bundle/customRelease/app-custom-release.aab';
-var noveoxLumiAppAndroidAabPath =
-    'build/app/outputs/bundle/mainRelease/app-main-release.aab';
-var noveoxAndroidApkPath =
-    'build/app/outputs/flutter-apk/app-custom-release.apk';
-var customAndroidApkPath =
-    'build/app/outputs/flutter-apk/app-custom-release.apk';
-*/
-
 Future<bool> initFlutterAndroidBuild({int? sdkVersion}) async {
-  var context = await getAndroidBuildContent(sdkVersion: sdkVersion);
+  var context = await getAndroidBuildContext(sdkVersion: sdkVersion);
   if (context.androidSdkBuildToolsPath != null) {
     try {
       await initAndroidBuildEnvironment(context: context);

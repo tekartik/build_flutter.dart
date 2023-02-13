@@ -4,19 +4,18 @@ import 'package:args/args.dart';
 import 'package:tekartik_build_menu_flutter/app_build_menu.dart';
 
 Future<void> main(List<String> arguments) async {
-  await fbm(arguments);
+  fbm(arguments);
 }
 
-Future<void> fbm(List<String> arguments) async {
+void fbm(List<String> arguments) {
   var parser = ArgParser();
   var result = parser.parse(arguments);
   var appPath = result.rest;
 
   if (appPath.isEmpty) {
-    stderr.writeln('Missing path');
-    exit(1);
+    appPath = [Directory.current.path];
   }
-  mainMenu(arguments, () {
+  mainMenu(appPath.sublist(1), () {
     menuAppContent(path: appPath.first);
   });
 }
