@@ -4,7 +4,7 @@ version: 0.3.4
 publish_to: none
 
 environment:
-  sdk: '>=2.18.0 <4.0.0'
+  sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
   path:
@@ -14,27 +14,27 @@ dependencies:
   tekartik_build_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
-      ref: dart2_3
+      ref: dart3a
       path: packages/build_flutter
     version: '>=1.0.2'
   uuid: '>=3.0.0-0'
   tekartik_test_menu_io:
     git:
       url: https://github.com/tekartik/test_menu.dart
-      ref: dart2_3
+      ref: dart3a
       path: test_menu_io
   tekartik_test_menu:
     git:
       url: https://github.com/tekartik/test_menu.dart
-      ref: dart2_3
+      ref: dart3a
       path: test_menu
 dependency_overrides:
   tekartik_build_flutter:
     path: ../build_flutter
 
 dev_dependencies:
-  lints: ^1.0.0
-  test: ^1.16.0
+  lints: '>=1.0.0'
+  test: '>=1.16.0'
 
 executables:
   fbm: fbm
