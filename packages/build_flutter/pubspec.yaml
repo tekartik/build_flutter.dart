@@ -35,6 +35,16 @@ dependencies:
       ref: dart3a
       path: packages/app_platform
     version: '>=0.3.1'
+  tekartik_built_flutter:
+    git:
+      url: https://github.com/tekartik/build_flutter.dart
+      ref: dart3a
+      path: packages/built_flutter
+    version: '>=0.1.0'
+dependency_overrides:
+  tekartik_built_flutter:
+    path: ../built_flutter
+
 dev_dependencies:
   lints: '>=1.0.0'
   test: '>=1.16.0'
