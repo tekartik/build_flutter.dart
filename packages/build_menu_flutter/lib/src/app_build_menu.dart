@@ -2,9 +2,14 @@ import 'package:dev_test/build_support.dart';
 import 'package:dev_test/package.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart' hide prompt;
+// ignore: depend_on_referenced_packages
+import 'package:tekartik_android_utils/build_utils.dart';
+import 'package:tekartik_build_flutter/app_builder.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_referenced_packages
 import 'package:tekartik_test_menu_io/test_menu_io.dart';
+
+var androidReady = initAndroidBuildEnvironment();
 
 Future main(List<String> arguments) async {
   mainMenu(arguments, menuAppContent);
@@ -75,6 +80,55 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
       });
     }
   });
+  var builder = FlutterAppBuilder(
+      context: FlutterAppContext(
+          path: path, buildOptions: FlutterAppBuildOptions(flavors: flavors)));
+  if (builder.context.buildOptions?.flavors?.isNotEmpty ?? false) {
+    menu('flavors', () {
+      for (var flavorBuilder in builder.flavorBuilders) {
+        Future<void> printApkSha1() async {
+          try {
+            write('apksigner: ${await flavorBuilder.apkSignerGetSha1()}');
+          } catch (_) {}
+          try {
+            write('keytool: ${await flavorBuilder.keytoolGetSha1()}');
+          } catch (_) {}
+        }
+
+        menu('flavor ${flavorBuilder.flavorName}', () {
+          item('build aab', () async {
+            await androidReady;
+            await flavorBuilder.buildAndroidAab();
+          });
+          item('build apk', () async {
+            await androidReady;
+            await flavorBuilder.buildAndroidApk();
+          });
+          item('sha1', () async {
+            await androidReady;
+            await printApkSha1();
+          });
+          item('apkinfo', () async {
+            await androidReady;
+
+            write('apkinfo: ${await flavorBuilder.getApkInfo()}');
+            write(
+                'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
+          });
+          item('build aab & apk and copy', () async {
+            await androidReady;
+            await flavorBuilder.buildAndroidAndCopy();
+          });
+
+          item('copy aab & apk', () async {
+            await androidReady;
+            await flavorBuilder.copyAndroid();
+            await printApkSha1();
+          });
+        });
+      }
+    });
+  }
   menu('build', () {
     for (var platform in buildHostSupportedPlatforms) {
       item('build $platform', () async {

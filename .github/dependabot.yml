@@ -1,0 +1,35 @@
+# Dependabot configuration file.
+# See https://docs.github.com/en/code-security/dependabot/dependabot-version-updates
+version: 2
+
+enable-beta-ecosystems: true
+updates:
+  - package-ecosystem: "pub"
+    directory: "example_flutter/app_build_menu_example"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "example_flutter/app_build_menu_example_support"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "packages/build_flutter"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "packages/build_menu_flutter"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "pub"
+    directory: "repo_support"
+    schedule:
+      interval: "monthly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
