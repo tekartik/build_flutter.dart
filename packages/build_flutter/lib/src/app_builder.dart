@@ -92,7 +92,7 @@ class FlutterAppFlavorBuilder {
         flavor: flavor, module: module, extension: 'apk', folder: 'apk');
   }
 
-  String getAabPath({String? flavor, String? module}) {
+  String getAabPath({String? module}) {
     return _getAndroidBuiltObjectPath(
         flavor: flavor,
         module: module,
@@ -216,7 +216,7 @@ class FlutterAppFlavorBuilder {
   }
 
   Future copyAab({required apk_utils.ApkInfo apkInfo}) async {
-    var aabPath = getAabPath(flavor: flavor);
+    var aabPath = getAabPath();
     var basename = getDeployBaseName(apkInfo: apkInfo);
     var dstFileName = '$basename.aab';
     var dst = join(aabDeployPath, dstFileName);

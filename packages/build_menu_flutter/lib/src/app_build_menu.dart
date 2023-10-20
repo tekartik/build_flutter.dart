@@ -15,15 +15,76 @@ Future main(List<String> arguments) async {
   mainMenu(arguments, menuAppContent);
 }
 
+/// To deprecate
 void menuAppContent({String path = '.', List<String>? flavors}) {
-  var appPath = path;
-  var appShell = Shell(workingDirectory: path);
+  var builder = FlutterAppBuilder(
+      context: FlutterAppContext(
+          path: path, buildOptions: FlutterAppBuildOptions(flavors: flavors)));
+  menuFlutterAppContent(builder: builder);
+}
+
+void menuFlutterAppFlavorContent(
+    {required FlutterAppFlavorBuilder flavorBuilder}) {
+  Future<void> printApkSha1() async {
+    try {
+      write('apksigner: ${await flavorBuilder.apkSignerGetSha1()}');
+    } catch (_) {}
+    try {
+      write('keytool: ${await flavorBuilder.keytoolGetSha1()}');
+    } catch (_) {}
+  }
+
+  menu('flavor ${flavorBuilder.flavorName}', () {
+    item('clean', () async {
+      await flavorBuilder.clean();
+    });
+    item('build aab', () async {
+      await androidReady;
+      await flavorBuilder.buildAndroidAab();
+    });
+    item('build apk', () async {
+      await androidReady;
+      await flavorBuilder.buildAndroidApk();
+    });
+    item('sha1', () async {
+      await androidReady;
+      await printApkSha1();
+    });
+    item('apkinfo', () async {
+      await androidReady;
+
+      write('apkinfo: ${await flavorBuilder.getApkInfo()}');
+      write(
+          'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
+    });
+    item('build aab & apk and copy', () async {
+      await androidReady;
+      await flavorBuilder.buildAndroidAndCopy();
+    });
+    item('clean, build aab & apk and copy', () async {
+      await androidReady;
+      await flavorBuilder.clean();
+      await flavorBuilder.buildAndroidAndCopy();
+    });
+
+    item('copy aab & apk', () async {
+      await androidReady;
+      await flavorBuilder.copyAndroid();
+      await printApkSha1();
+    });
+  });
+}
+
+void menuFlutterAppContent({required FlutterAppBuilder builder}) {
+  var appPath = builder.path;
+  var flavors = builder.flavors;
+  var appShell = Shell(workingDirectory: appPath);
   var currentFlavor = listFirst(flavors);
 
   Map pubspec;
   var checkPubspec = () async {
     try {
-      pubspec = await pathGetPubspecYamlMap(path);
+      pubspec = await pathGetPubspecYamlMap(appPath);
       return pubspec;
     } catch (_) {}
     return <String, Object?>{};
@@ -44,7 +105,7 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
   }
 
   enter(() async {
-    write('App path: ${absolute(path)}');
+    write('App path: ${absolute(appPath)}');
     var pubspec = await checkPubspec;
     write('Package: ${pubspec['name']}');
   });
@@ -57,7 +118,7 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
       enter(() async {
         dump();
       });
-      for (var flavor in flavors!) {
+      for (var flavor in flavors) {
         item(flavor, () {
           dump();
           currentFlavor = flavor;
@@ -80,52 +141,10 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
       });
     }
   });
-  var builder = FlutterAppBuilder(
-      context: FlutterAppContext(
-          path: path, buildOptions: FlutterAppBuildOptions(flavors: flavors)));
   if (builder.context.buildOptions?.flavors?.isNotEmpty ?? false) {
     menu('flavors', () {
       for (var flavorBuilder in builder.flavorBuilders) {
-        Future<void> printApkSha1() async {
-          try {
-            write('apksigner: ${await flavorBuilder.apkSignerGetSha1()}');
-          } catch (_) {}
-          try {
-            write('keytool: ${await flavorBuilder.keytoolGetSha1()}');
-          } catch (_) {}
-        }
-
-        menu('flavor ${flavorBuilder.flavorName}', () {
-          item('build aab', () async {
-            await androidReady;
-            await flavorBuilder.buildAndroidAab();
-          });
-          item('build apk', () async {
-            await androidReady;
-            await flavorBuilder.buildAndroidApk();
-          });
-          item('sha1', () async {
-            await androidReady;
-            await printApkSha1();
-          });
-          item('apkinfo', () async {
-            await androidReady;
-
-            write('apkinfo: ${await flavorBuilder.getApkInfo()}');
-            write(
-                'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
-          });
-          item('build aab & apk and copy', () async {
-            await androidReady;
-            await flavorBuilder.buildAndroidAndCopy();
-          });
-
-          item('copy aab & apk', () async {
-            await androidReady;
-            await flavorBuilder.copyAndroid();
-            await printApkSha1();
-          });
-        });
+        menuFlutterAppFlavorContent(flavorBuilder: flavorBuilder);
       }
     });
   }
@@ -164,18 +183,18 @@ void menuAppContent({String path = '.', List<String>? flavors}) {
     }
   });
   item('list sub projects', () async {
-    await recursivePackagesRun([path], action: (path) {
+    await recursivePackagesRun([appPath], action: (path) {
       write('project: ${absolute(path)}');
     });
   });
   item('run_ci', () async {
-    await packageRunCi(path);
+    await packageRunCi(appPath);
   });
   item('pub_get', () async {
-    await packageRunCi(path, options: PackageRunCiOptions(pubGetOnly: true));
+    await packageRunCi(appPath, options: PackageRunCiOptions(pubGetOnly: true));
   });
   item('pub_upgrade', () async {
-    await packageRunCi(path,
+    await packageRunCi(appPath,
         options: PackageRunCiOptions(pubUpgradeOnly: true));
   });
   item('flutter clean', () async {

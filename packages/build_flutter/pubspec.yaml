@@ -7,9 +7,9 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
-  path: ^1.8.0
+  path: '>=1.8.0'
   process_run:
-  fs_shim:
+  fs_shim: '>=2.2.1'
   collection:
   args:
   tekartik_lints_flutter:
