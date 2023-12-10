@@ -8,7 +8,7 @@ import 'package:tekartik_build_flutter/src/import.dart';
 import 'build_flutter_common.dart';
 
 var _linuxExeDir = join('build', 'linux', 'x64', 'release', 'bundle');
-var _windowsExeDir = join('build', 'windows', 'runner', 'Release');
+var _windowsExeDir = join('build', 'windows', 'x64', 'runner', 'Release');
 var _macOSExeDir = join('build', 'macos', 'Build', 'Products', 'Release');
 
 /// Safe delete a directory

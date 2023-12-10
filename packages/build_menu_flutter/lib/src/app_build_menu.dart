@@ -147,6 +147,8 @@ void menuFlutterAppContent({required FlutterAppBuilder builder}) {
         menuFlutterAppFlavorContent(flavorBuilder: flavorBuilder);
       }
     });
+  } else {
+    menuFlutterAppFlavorContent(flavorBuilder: builder.flavorBuilders.first);
   }
   menu('build', () {
     for (var platform in buildHostSupportedPlatforms) {

@@ -244,9 +244,12 @@ class FlutterAppBuilder {
         return FlutterAppFlavorBuilder(appBuilder: this, flavor: flavor);
       }).toList();
     } else {
-      return [FlutterAppFlavorBuilder(appBuilder: this, flavor: null)];
+      return [defaultFlavorBuild];
     }
   }
+
+  FlutterAppFlavorBuilder get defaultFlavorBuild =>
+      FlutterAppFlavorBuilder(appBuilder: this, flavor: null);
 
   String get apkDeployPath => join(deployPath, 'apk');
   String get aabDeployPath => join(deployPath, 'aab');

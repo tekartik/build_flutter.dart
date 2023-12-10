@@ -29,6 +29,9 @@ void main() {
         await shell.run(
             'app_build_menu_example.app/Contents/MacOS/app_build_menu_example');
         // The marker is at a different location on MacOS...
+      } else if (Platform.isWindows) {
+        await shell.run(shellArgument(join('.', appName)));
+        expect(File(markerPath).existsSync(), isTrue);
       } else {
         await shell.run(shellArgument(join('.', appName)));
         expect(File(markerPath).existsSync(), isTrue);
