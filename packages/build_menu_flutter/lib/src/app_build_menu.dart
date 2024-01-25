@@ -38,39 +38,50 @@ void menuFlutterAppFlavorContent(
     item('clean', () async {
       await flavorBuilder.clean();
     });
-    item('build aab', () async {
-      await androidReady;
-      await flavorBuilder.buildAndroidAab();
+    menu('ios', () {
+      item('build ipa', () async {
+        await flavorBuilder.buildIosIpa();
+      });
+      item('clean, build ipa', () async {
+        await flavorBuilder.clean();
+        await flavorBuilder.buildIosIpa();
+      });
     });
-    item('build apk', () async {
-      await androidReady;
-      await flavorBuilder.buildAndroidApk();
-    });
-    item('sha1', () async {
-      await androidReady;
-      await printApkSha1();
-    });
-    item('apkinfo', () async {
-      await androidReady;
+    menu('android', () {
+      item('build aab', () async {
+        await androidReady;
+        await flavorBuilder.buildAndroidAab();
+      });
+      item('build apk', () async {
+        await androidReady;
+        await flavorBuilder.buildAndroidApk();
+      });
+      item('sha1', () async {
+        await androidReady;
+        await printApkSha1();
+      });
+      item('apkinfo', () async {
+        await androidReady;
 
-      write('apkinfo: ${await flavorBuilder.getApkInfo()}');
-      write(
-          'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
-    });
-    item('build aab & apk and copy', () async {
-      await androidReady;
-      await flavorBuilder.buildAndroidAndCopy();
-    });
-    item('clean, build aab & apk and copy', () async {
-      await androidReady;
-      await flavorBuilder.clean();
-      await flavorBuilder.buildAndroidAndCopy();
-    });
+        write('apkinfo: ${await flavorBuilder.getApkInfo()}');
+        write(
+            'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
+      });
+      item('build aab & apk and copy', () async {
+        await androidReady;
+        await flavorBuilder.buildAndroidAndCopy();
+      });
+      item('clean, build aab & apk and copy', () async {
+        await androidReady;
+        await flavorBuilder.clean();
+        await flavorBuilder.buildAndroidAndCopy();
+      });
 
-    item('copy aab & apk', () async {
-      await androidReady;
-      await flavorBuilder.copyAndroid();
-      await printApkSha1();
+      item('copy aab & apk', () async {
+        await androidReady;
+        await flavorBuilder.copyAndroid();
+        await printApkSha1();
+      });
     });
   });
 }

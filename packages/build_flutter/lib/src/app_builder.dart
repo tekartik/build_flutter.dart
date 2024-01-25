@@ -137,6 +137,10 @@ class FlutterAppFlavorBuilder {
     await build('appbundle');
   }
 
+  Future<void> buildIosIpa() async {
+    await build('ipa');
+  }
+
   Future<void> buildAndroidAndCopy() async {
     await buildAndroidApk();
     await buildAndroidAab();
