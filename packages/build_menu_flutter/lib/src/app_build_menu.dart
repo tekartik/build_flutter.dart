@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dev_test/build_support.dart';
 import 'package:dev_test/package.dart';
 import 'package:path/path.dart';
@@ -149,6 +151,27 @@ void menuFlutterAppContent({required FlutterAppBuilder builder}) {
         if (await checkFlutterSupported()) {
           await createProject(appPath, platform: platform);
         }
+      });
+    }
+    if (Platform.isMacOS) {
+      menu('ios pod', () {
+        var iosPath = normalize(absolute(join(appPath, 'ios')));
+        item('Delete podfile.lock && Pods', () async {
+          await File(join(iosPath, 'Podfile.lock')).delete(recursive: true);
+          await Directory(join(iosPath, 'Pods')).delete(recursive: true);
+        });
+        item('pod install', () async {
+          var shell = Shell().cd(iosPath);
+          await shell.run('pod install');
+        });
+        item('pod install --repo-update', () async {
+          var shell = Shell().cd(iosPath);
+          await shell.run('pod install --repo-update');
+        });
+        item('pod repo update', () async {
+          var shell = Shell().cd(iosPath);
+          await shell.run('pod repo update');
+        });
       });
     }
   });
