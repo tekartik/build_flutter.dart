@@ -137,6 +137,10 @@ class FlutterAppFlavorBuilder {
     await build('appbundle');
   }
 
+  Future<void> buildIosIpa() async {
+    await build('ipa');
+  }
+
   Future<void> buildAndroidAndCopy() async {
     await buildAndroidApk();
     await buildAndroidAab();
@@ -244,13 +248,15 @@ class FlutterAppBuilder {
         return FlutterAppFlavorBuilder(appBuilder: this, flavor: flavor);
       }).toList();
     } else {
-      return [defaultFlavorBuild];
+      return [defaultFlavorBuilder];
     }
   }
 
-  FlutterAppFlavorBuilder get defaultFlavorBuild =>
+  FlutterAppFlavorBuilder get defaultFlavorBuilder =>
       FlutterAppFlavorBuilder(appBuilder: this, flavor: null);
 
+  @Deprecated('Use defaultFlavorBuilder')
+  FlutterAppFlavorBuilder get defaultFlavorBuild => defaultFlavorBuilder;
   String get apkDeployPath => join(deployPath, 'apk');
   String get aabDeployPath => join(deployPath, 'aab');
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:dev_test/build_support.dart';
 import 'package:dev_test/package.dart';
 import 'package:path/path.dart';
@@ -38,39 +40,50 @@ void menuFlutterAppFlavorContent(
     item('clean', () async {
       await flavorBuilder.clean();
     });
-    item('build aab', () async {
-      await androidReady;
-      await flavorBuilder.buildAndroidAab();
+    menu('ios', () {
+      item('build ipa', () async {
+        await flavorBuilder.buildIosIpa();
+      });
+      item('clean, build ipa', () async {
+        await flavorBuilder.clean();
+        await flavorBuilder.buildIosIpa();
+      });
     });
-    item('build apk', () async {
-      await androidReady;
-      await flavorBuilder.buildAndroidApk();
-    });
-    item('sha1', () async {
-      await androidReady;
-      await printApkSha1();
-    });
-    item('apkinfo', () async {
-      await androidReady;
+    menu('android', () {
+      item('build aab', () async {
+        await androidReady;
+        await flavorBuilder.buildAndroidAab();
+      });
+      item('build apk', () async {
+        await androidReady;
+        await flavorBuilder.buildAndroidApk();
+      });
+      item('sha1', () async {
+        await androidReady;
+        await printApkSha1();
+      });
+      item('apkinfo', () async {
+        await androidReady;
 
-      write('apkinfo: ${await flavorBuilder.getApkInfo()}');
-      write(
-          'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
-    });
-    item('build aab & apk and copy', () async {
-      await androidReady;
-      await flavorBuilder.buildAndroidAndCopy();
-    });
-    item('clean, build aab & apk and copy', () async {
-      await androidReady;
-      await flavorBuilder.clean();
-      await flavorBuilder.buildAndroidAndCopy();
-    });
+        write('apkinfo: ${await flavorBuilder.getApkInfo()}');
+        write(
+            'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
+      });
+      item('build aab & apk and copy', () async {
+        await androidReady;
+        await flavorBuilder.buildAndroidAndCopy();
+      });
+      item('clean, build aab & apk and copy', () async {
+        await androidReady;
+        await flavorBuilder.clean();
+        await flavorBuilder.buildAndroidAndCopy();
+      });
 
-    item('copy aab & apk', () async {
-      await androidReady;
-      await flavorBuilder.copyAndroid();
-      await printApkSha1();
+      item('copy aab & apk', () async {
+        await androidReady;
+        await flavorBuilder.copyAndroid();
+        await printApkSha1();
+      });
     });
   });
 }
@@ -138,6 +151,27 @@ void menuFlutterAppContent({required FlutterAppBuilder builder}) {
         if (await checkFlutterSupported()) {
           await createProject(appPath, platform: platform);
         }
+      });
+    }
+    if (Platform.isMacOS) {
+      menu('ios pod', () {
+        var iosPath = normalize(absolute(join(appPath, 'ios')));
+        item('Delete podfile.lock && Pods', () async {
+          await File(join(iosPath, 'Podfile.lock')).delete(recursive: true);
+          await Directory(join(iosPath, 'Pods')).delete(recursive: true);
+        });
+        item('pod install', () async {
+          var shell = Shell().cd(iosPath);
+          await shell.run('pod install');
+        });
+        item('pod install --repo-update', () async {
+          var shell = Shell().cd(iosPath);
+          await shell.run('pod install --repo-update');
+        });
+        item('pod repo update', () async {
+          var shell = Shell().cd(iosPath);
+          await shell.run('pod repo update');
+        });
       });
     }
   });
