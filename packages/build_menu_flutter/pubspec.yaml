@@ -9,6 +9,7 @@ environment:
 dependencies:
   path:
   dev_test: '>=0.16.2+3'
+  dev_build: '>=0.16.5-4'
   process_run:
   args:
   tekartik_build_flutter:
@@ -18,16 +19,6 @@ dependencies:
       path: packages/build_flutter
     version: '>=1.0.2'
   uuid: '>=3.0.0-0'
-  tekartik_test_menu_io:
-    git:
-      url: https://github.com/tekartik/test_menu.dart
-      ref: dart3a
-      path: test_menu_io
-  tekartik_test_menu:
-    git:
-      url: https://github.com/tekartik/test_menu.dart
-      ref: dart3a
-      path: test_menu
   tekartik_built_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
