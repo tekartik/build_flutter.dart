@@ -15,7 +15,7 @@ import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_ref
 var androidReady = initAndroidBuildEnvironment();
 
 Future main(List<String> arguments) async {
-  mainMenu(arguments, menuAppContent);
+  mainMenuConsole(arguments, menuAppContent);
 }
 
 /// To deprecate

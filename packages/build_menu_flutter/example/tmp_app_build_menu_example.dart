@@ -9,7 +9,7 @@ Future main(List<String> arguments) async {
   try {
     await Directory(appPath).delete(recursive: true);
   } catch (_) {}
-  mainMenu(arguments, () {
+  mainMenuConsole(arguments, () {
     menuAppContent(path: appPath);
   });
 }
