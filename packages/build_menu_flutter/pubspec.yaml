@@ -1,6 +1,6 @@
 name: tekartik_build_menu_flutter
 description: Build menu flutter
-version: 0.3.4
+version: 0.4.0
 publish_to: none
 
 environment:
