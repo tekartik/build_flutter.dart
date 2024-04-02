@@ -1,14 +1,15 @@
 name: tekartik_build_menu_flutter
 description: Build menu flutter
-version: 0.3.4
+version: 0.4.0
 publish_to: none
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: '>=3.3.0 <4.0.0'
 
 dependencies:
   path:
   dev_test: '>=0.16.2+3'
+  dev_build: '>=0.16.5-6'
   process_run:
   args:
   tekartik_build_flutter:
@@ -18,16 +19,6 @@ dependencies:
       path: packages/build_flutter
     version: '>=1.0.2'
   uuid: '>=3.0.0-0'
-  tekartik_test_menu_io:
-    git:
-      url: https://github.com/tekartik/test_menu.dart
-      ref: dart3a
-      path: test_menu_io
-  tekartik_test_menu:
-    git:
-      url: https://github.com/tekartik/test_menu.dart
-      ref: dart3a
-      path: test_menu
   tekartik_built_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart

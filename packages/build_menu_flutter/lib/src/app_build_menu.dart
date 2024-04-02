@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:dev_build/menu/menu_io.dart';
 import 'package:dev_test/build_support.dart';
 import 'package:dev_test/package.dart';
 import 'package:path/path.dart';
@@ -9,12 +11,11 @@ import 'package:tekartik_android_utils/build_utils.dart';
 import 'package:tekartik_build_flutter/app_builder.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_referenced_packages
-import 'package:tekartik_test_menu_io/test_menu_io.dart';
 
 var androidReady = initAndroidBuildEnvironment();
 
 Future main(List<String> arguments) async {
-  mainMenu(arguments, menuAppContent);
+  mainMenuConsole(arguments, menuAppContent);
 }
 
 /// To deprecate
