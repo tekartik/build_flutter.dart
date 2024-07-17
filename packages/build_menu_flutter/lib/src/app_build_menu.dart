@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dev_build/build_support.dart';
 import 'package:dev_build/menu/menu_io.dart';
-import 'package:dev_test/build_support.dart';
-import 'package:dev_test/package.dart';
+import 'package:dev_build/package.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart' hide prompt;
 // ignore: depend_on_referenced_packages
