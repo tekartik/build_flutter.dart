@@ -9,6 +9,7 @@ import 'package:process_run/shell.dart' hide prompt;
 // ignore: depend_on_referenced_packages
 import 'package:tekartik_android_utils/build_utils.dart';
 import 'package:tekartik_build_flutter/app_builder.dart';
+import 'package:tekartik_build_flutter/app_publisher.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_referenced_packages
 
@@ -19,15 +20,21 @@ Future main(List<String> arguments) async {
 }
 
 /// To deprecate
-void menuAppContent({String path = '.', List<String>? flavors}) {
+void menuAppContent(
+    {String path = '.',
+    List<String>? flavors,
+    AndroidPublisherClient? androidPublisherClient}) {
   var builder = FlutterAppBuilder(
       context: FlutterAppContext(
           path: path, buildOptions: FlutterAppBuildOptions(flavors: flavors)));
-  menuFlutterAppContent(builder: builder);
+  menuFlutterAppContent(
+      builder: builder, androidPublisherClient: androidPublisherClient);
 }
 
-void menuFlutterAppFlavorContent(
-    {required FlutterAppFlavorBuilder flavorBuilder}) {
+void menuFlutterAppFlavorContent({
+  required FlutterAppFlavorBuilder flavorBuilder,
+  AndroidPublisherClient? androidPublisherClient,
+}) {
   Future<void> printApkSha1() async {
     try {
       write('apksigner: ${await flavorBuilder.apkSignerGetSha1()}');
@@ -51,16 +58,16 @@ void menuFlutterAppFlavorContent(
       });
     });
     menu('android', () {
-      item('build aab', () async {
+      enter(() async {
         await androidReady;
+      });
+      item('build aab', () async {
         await flavorBuilder.buildAndroidAab();
       });
       item('build apk', () async {
-        await androidReady;
         await flavorBuilder.buildAndroidApk();
       });
       item('sha1', () async {
-        await androidReady;
         await printApkSha1();
       });
       item('apkinfo', () async {
@@ -81,15 +88,30 @@ void menuFlutterAppFlavorContent(
       });
 
       item('copy aab & apk', () async {
-        await androidReady;
         await flavorBuilder.copyAndroid();
         await printApkSha1();
       });
+      if (androidPublisherClient != null) {
+        item('publish', () async {
+          await flavorBuilder.androidPublish(client: androidPublisherClient);
+        });
+        item('build & publish', () async {
+          await flavorBuilder.androidBuildAndPublish(
+              client: androidPublisherClient);
+        });
+        item('clean, build & publish', () async {
+          await flavorBuilder.clean();
+          await flavorBuilder.androidBuildAndPublish(
+              client: androidPublisherClient);
+        });
+      }
     });
   });
 }
 
-void menuFlutterAppContent({required FlutterAppBuilder builder}) {
+void menuFlutterAppContent(
+    {required FlutterAppBuilder builder,
+    AndroidPublisherClient? androidPublisherClient}) {
   var appPath = builder.path;
   var flavors = builder.flavors;
   var appShell = Shell(workingDirectory: appPath);
@@ -179,11 +201,15 @@ void menuFlutterAppContent({required FlutterAppBuilder builder}) {
   if (builder.context.buildOptions?.flavors?.isNotEmpty ?? false) {
     menu('flavors', () {
       for (var flavorBuilder in builder.flavorBuilders) {
-        menuFlutterAppFlavorContent(flavorBuilder: flavorBuilder);
+        menuFlutterAppFlavorContent(
+            flavorBuilder: flavorBuilder,
+            androidPublisherClient: androidPublisherClient);
       }
     });
   } else {
-    menuFlutterAppFlavorContent(flavorBuilder: builder.flavorBuilders.first);
+    menuFlutterAppFlavorContent(
+        flavorBuilder: builder.flavorBuilders.first,
+        androidPublisherClient: androidPublisherClient);
   }
   menu('build', () {
     for (var platform in buildHostSupportedPlatforms) {

@@ -41,6 +41,11 @@ dependencies:
       ref: dart3a
       path: packages/built_flutter
     version: '>=0.1.0'
+  tekartik_playstore_publish:
+    git:
+      url: https://github.com/tekartik/app_build.dart
+      ref: dart3a
+      path: packages/playstore_publish
 dependency_overrides:
   tekartik_built_flutter:
     path: ../built_flutter

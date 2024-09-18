@@ -5,6 +5,7 @@ import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 import 'package:tekartik_android_utils/apk_utils.dart' as apk_utils;
 import 'package:tekartik_built_flutter/constant.dart';
+import 'package:tekartik_playstore_publish/playstore_publish.dart';
 
 /// Clean a web app
 Future<void> flutterProjectClean(String directory) async {
@@ -141,12 +142,40 @@ class FlutterAppFlavorBuilder {
     await build('ipa');
   }
 
-  Future<void> buildAndroidAndCopy() async {
+  /// Either publisher or api must be provided
+  Future<void> androidBuildAndPublish(
+      {required AndroidPublisherClient client}) async {
+    var apkInfo = await buildAndroidAndCopy();
+    await androidPublish(client: client, apkInfo: apkInfo);
+  }
+
+  /// Assume androd build and copy has been called
+  Future<void> androidPublish(
+      {required AndroidPublisherClient client,
+      apk_utils.ApkInfo? apkInfo}) async {
+    apkInfo ??= await getApkInfo();
+    var versionCode = int.parse(apkInfo.versionCode!);
+    var publisher =
+        AndroidPublisher(packageName: apkInfo.name!, client: client);
+
+    var aabPath = getAabPath();
+    await publisher.uploadBundleAndPublish(
+      aabPath: aabPath,
+      trackName: publishTrackInternal,
+      versionCode: versionCode,
+      //    changesNotSentForReview: true
+    );
+
+    print('publishing done $apkInfo');
+  }
+
+  Future<apk_utils.ApkInfo> buildAndroidAndCopy() async {
     await buildAndroidApk();
     await buildAndroidAab();
     var apkInfo = await getApkInfo();
     await copyApk(apkInfo: apkInfo);
     await copyAab(apkInfo: apkInfo);
+    return apkInfo;
   }
 
   /// Need aab and apk
