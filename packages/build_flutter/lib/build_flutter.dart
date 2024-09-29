@@ -1,5 +1,5 @@
 /// Build flutter helper
-library tekartik_build_flutter;
+library;
 
 export 'src/build_flutter.dart'
     show
