@@ -8,7 +8,7 @@ environment:
 
 dependencies:
   path:
-  dev_build: '>=0.16.5-6'
+  dev_build: '>=1.1.0'
   process_run:
   args:
   tekartik_build_flutter:
