@@ -133,7 +133,7 @@ void menuFlutterAppContent(
     if (!supported) {
       write('flutter not supported');
       var response = await prompt('Continue Y/N');
-      if (response?.toLowerCase() == 'y') {
+      if (response.toLowerCase() == 'y') {
         return true;
       }
     }
@@ -270,8 +270,8 @@ void menuFlutterAppContent(
   });
   item('prompt', () async {
     var command = await prompt('Enter command');
-    if (command?.isNotEmpty ?? false) {
-      await appShell.run(command!);
+    if (command.isNotEmpty) {
+      await appShell.run(command);
     }
   });
 }
