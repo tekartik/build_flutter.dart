@@ -6,6 +6,8 @@ publish_to: none
 environment:
   sdk: ^3.5.0
 
+resolution: workspace
+
 dependencies:
   path:
   dev_build: '>=1.1.0'
@@ -34,11 +36,11 @@ dependencies:
     git:
       url: https://github.com/tekartik/android_utils.dart
       ref: dart3a
-dependency_overrides:
-  tekartik_build_flutter:
-    path: ../build_flutter
-  tekartik_built_flutter:
-    path: ../built_flutter
+  tekartik_appstore_publish:
+    git:
+      url: https://github.com/tekartik/app_build.dart
+      ref: dart3a
+      path: packages/appstore_publish
 
 dev_dependencies:
   lints: '>=1.0.0'

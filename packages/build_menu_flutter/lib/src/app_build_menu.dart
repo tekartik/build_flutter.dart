@@ -6,6 +6,7 @@ import 'package:dev_build/menu/menu_io.dart';
 import 'package:dev_build/package.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart' hide prompt;
+import 'package:tekartik_android_utils/aab_utils.dart';
 // ignore: depend_on_referenced_packages
 import 'package:tekartik_android_utils/build_utils.dart';
 import 'package:tekartik_build_flutter/app_builder.dart';
@@ -106,6 +107,67 @@ void menuFlutterAppFlavorContent({
         });
       }
     });
+  });
+}
+
+/// Menu flutter app publish
+void menuFlutterAppPublish(
+    {required FlutterAppFlavorBuilder flavorBuilder,
+    required AndroidPublisherClient client}) {
+  late ApkInfo apkInfo;
+  late AndroidPublisher publisher;
+  List<String>? tracksOrNull;
+
+  enter(() async {
+    await androidReady;
+    apkInfo = await flavorBuilder.getApkInfo();
+    publisher = AndroidPublisher(packageName: apkInfo.name!, client: client);
+    write(apkInfo);
+  });
+  Future<List<String>> getTracks({bool force = false}) async {
+    if (tracksOrNull == null || force) {
+      tracksOrNull = await publisher.listTracks();
+    }
+    return tracksOrNull!;
+  }
+
+  item('list bundles', () async {
+    var bundles = await publisher.listBundles();
+    write(bundles);
+  });
+  item('list tracks', () async {
+    var tracks = await getTracks(force: true);
+    write(tracks);
+  });
+  item('promote internal to production', () async {
+    var internalVersionCode =
+        await publisher.getTrackVersionCode(trackName: publishTrackInternal);
+    var productionVersionCode =
+        await publisher.getTrackVersionCode(trackName: publishTrackProduction);
+    write('internal: $internalVersionCode production: $productionVersionCode');
+    if ((internalVersionCode ?? 0) > (productionVersionCode ?? 0)) {
+      await publisher.publishVersionCode(
+          trackName: publishTrackProduction, versionCode: internalVersionCode!);
+    }
+  });
+  item('bundles per tracks', () async {
+    var tracks = await getTracks(force: true);
+    write(tracks);
+    for (var track in tracks) {
+      write('track $track');
+      try {
+        await publisher.getTrackVersionCode(trackName: track);
+      } catch (e) {
+        write('Error: $e track $track');
+      }
+    }
+
+    write(tracks);
+  });
+  item('publish internal', () async {
+    await flavorBuilder.androidPublish(
+      client: client,
+    );
   });
 }
 

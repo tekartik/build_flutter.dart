@@ -6,3 +6,4 @@ workspace:
   - repo_support
   - packages/build_flutter
   - packages/built_flutter
+  - packages/build_menu_flutter
