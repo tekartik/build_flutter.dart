@@ -93,6 +93,10 @@ void menuFlutterAppFlavorContent({
         await printApkSha1();
       });
       if (androidPublisherClient != null) {
+        menu('publish menu', () {
+          menuFlutterAppFlavorPublish(
+              flavorBuilder: flavorBuilder, client: androidPublisherClient);
+        });
         item('publish', () async {
           await flavorBuilder.androidPublish(client: androidPublisherClient);
         });
@@ -111,7 +115,7 @@ void menuFlutterAppFlavorContent({
 }
 
 /// Menu flutter app publish
-void menuFlutterAppPublish(
+void menuFlutterAppFlavorPublish(
     {required FlutterAppFlavorBuilder flavorBuilder,
     required AndroidPublisherClient client}) {
   late ApkInfo apkInfo;

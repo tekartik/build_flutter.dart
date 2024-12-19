@@ -8,4 +8,8 @@ export 'package:tekartik_build_flutter/flutter_devices.dart';
 export 'package:tekartik_build_flutter/flutter_project.dart';
 
 export 'src/app_build_menu.dart'
-    show menuAppContent, menuFlutterAppFlavorContent, menuFlutterAppContent;
+    show
+        menuAppContent,
+        menuFlutterAppFlavorContent,
+        menuFlutterAppContent,
+        menuFlutterAppFlavorPublish;
