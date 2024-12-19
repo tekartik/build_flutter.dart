@@ -7,28 +7,36 @@ import 'package:tekartik_common_utils/list_utils.dart';
 
 import 'import.dart';
 
+/// Default to 'app'
 const defaultAppAndroidModule = 'app';
 
+/// build type release
 const buildTypeRelease = 'release';
+
+/// build type debug
 const buildTypeDebug = 'debug';
 
+/// Flutter project
 class FlutterProject {
   /// The path
   late final String path;
 
-  // Default to 'app'
+  /// Default to 'app'
   late final String androidModule;
+
+  /// build platform
   late final String buildPlatform;
 
   /// Defatul to release
   late final String buildType;
 
-  // Optional flavor
+  /// Optional flavors
   late List<String> flavors;
 
+  /// True if has flavors
   bool get hasFlavors => flavors.isNotEmpty;
 
-  // windows/posix path ok
+  /// windows/posix path ok
   FlutterProject(String path,
       {
       /// Default to empty
@@ -48,16 +56,22 @@ class FlutterProject {
   /// Single flavor, if any
   String? get flavor => listSingleOrNull(flavors);
 
+  /// Get the absolute path
   String getAbsolutePath() => normalize(absolute((path)));
 
+  /// Get the absolute apk path
   String getAbsoluteApkPath() => join(getAbsolutePath(), getApkPath());
 
+  /// Get the absolute aab path
   String getAbsoluteAppBundlePath() =>
       join(getAbsolutePath(), getAppBundlePath());
 
-  // To deprecate
+  @Deprecated('use getAbsoluteAppBundlePath')
+
+  /// Get the absolute aab path
   String getAbsoluteAabPath() => join(getAbsolutePath(), getAppBundlePath());
 
+  /// shell
   late final shell = Shell(workingDirectory: path);
 
   /// Single flavor supported
@@ -81,6 +95,7 @@ class FlutterProject {
     ''');
   }
 
+  /// build/app/outputs
   late final moduleBuildDirOutput = join('build', androidModule, 'outputs');
 
   /// Path relative to the project directory
@@ -121,6 +136,7 @@ class FlutterProject {
 // 'build/app/outputs/bundle/customRelease/app-custom-release.aab';
 // _lowerCamelCaseWords(parts),
 
+  /// Get the absolute path
   String getAbsolutePathFromRelative(String relative) {
     return join(getAbsolutePath(), relative);
   }
@@ -149,6 +165,7 @@ String _lowerCamelCaseWords(List<String> words) {
   return words.first;
 }
 
+/// Get the flutter project
 Future<bool> initFlutterAndroidBuild({int? sdkVersion}) async {
   var context = await getAndroidBuildContext(sdkVersion: sdkVersion);
   if (context.androidSdkBuildToolsPath != null) {

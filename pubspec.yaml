@@ -1,0 +1,8 @@
+name: _
+publish_to: none
+environment:
+  sdk: ^3.6.0
+workspace:
+  - repo_support
+  - packages/build_flutter
+  - packages/built_flutter

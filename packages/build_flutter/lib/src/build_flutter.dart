@@ -64,6 +64,7 @@ List<String>? getBuildHostSupportedPlatforms(
   return _buildHostSupportedBuildPlatforms[buildHost ?? buildHostCurrent];
 }
 
+/// Current build host
 final buildHostCurrent = _buildHostCurrent;
 
 /// All supported platform for current host
@@ -159,9 +160,14 @@ Future<void> checkoutFromGit(String path, {String? platform}) async {
 }
 
 @Deprecated('moved')
+
+/// Get the supported platforms
 var getBuildSupportedPlatforms = [
   buildPlatformCurrent,
   buildPlatformWeb,
   if (Platform.isMacOS) buildPlatformIOS,
-  buildPlatformAndroid
+  if (Platform.isMacOS) buildPlatformMacOS,
+  buildPlatformAndroid,
+  if (Platform.isLinux) buildPlatformLinux,
+  if (Platform.isWindows) buildPlatformWindows,
 ];

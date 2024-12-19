@@ -7,7 +7,7 @@ import 'package:test/test.dart';
 
 Future<void> main() async {
   if (!(await initFlutterAndroidBuild())) {
-    print('Flutter/Android build not setup');
+    stderr.writeln('Flutter/Android build not setup');
     return;
   }
   var dir =
@@ -29,7 +29,7 @@ Future<void> main() async {
       await createAndroidFlutterProjectIfNeeded();
 
       var apkFile = File(flutterProject.getAbsoluteApkPath());
-      print('Building: $apkFile');
+
       try {
         await apkFile.delete();
       } catch (_) {}
@@ -54,7 +54,6 @@ Future<void> main() async {
       await createAndroidFlutterProjectIfNeeded();
 
       var aabFile = File(flutterProject.getAbsoluteAppBundlePath());
-      print('Building: $aabFile');
       try {
         await aabFile.delete();
       } catch (_) {}

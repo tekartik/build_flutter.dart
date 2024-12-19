@@ -4,9 +4,12 @@ version: 1.0.4
 publish_to: none
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
+  cv:
   path: '>=1.8.0'
   process_run:
   fs_shim: '>=2.2.1'

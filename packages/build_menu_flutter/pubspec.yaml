@@ -30,6 +30,10 @@ dependencies:
       ref: dart3a
       path: packages/app_args
     version: '>=0.1.0'
+  tekartik_android_utils:
+    git:
+      url: https://github.com/tekartik/android_utils.dart
+      ref: dart3a
 dependency_overrides:
   tekartik_build_flutter:
     path: ../build_flutter

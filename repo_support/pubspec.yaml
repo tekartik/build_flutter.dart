@@ -3,8 +3,9 @@ version: 0.1.0
 publish_to: none
 
 environment:
-  sdk: ^3.5.0
+  sdk: ^3.6.0
 
+resolution: workspace
 dependencies:
   process_run: '>=0.10.0'
   tekartik_common_utils:
