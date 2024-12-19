@@ -158,9 +158,9 @@ void menuFlutterAppFlavorPublish(
     var tracks = await getTracks(force: true);
     write(tracks);
     for (var track in tracks) {
-      write('track $track');
       try {
-        await publisher.getTrackVersionCode(trackName: track);
+        var version = await publisher.getTrackVersionCode(trackName: track);
+        write('track: $track, version: $version');
       } catch (e) {
         write('Error: $e track $track');
       }
