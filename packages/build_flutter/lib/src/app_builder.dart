@@ -6,6 +6,7 @@ import 'package:process_run/shell.dart';
 import 'package:tekartik_android_utils/apk_utils.dart' as apk_utils;
 import 'package:tekartik_build_flutter/flutter_devices.dart';
 import 'package:tekartik_built_flutter/constant.dart';
+import 'package:tekartik_common_build/common_app_builder.dart';
 import 'package:tekartik_playstore_publish/playstore_publish.dart';
 
 /// Clean a web app
@@ -341,7 +342,7 @@ class FlutterAppFlavorBuilder {
 }
 
 /// Convenient builder.
-class FlutterAppBuilder {
+class FlutterAppBuilder implements CommonAppBuilder {
   /// Context
   final FlutterAppContext context;
 
@@ -349,6 +350,7 @@ class FlutterAppBuilder {
   late final String deployPath;
 
   /// Path
+  @override
   String get path => context.path;
 
   /// Module

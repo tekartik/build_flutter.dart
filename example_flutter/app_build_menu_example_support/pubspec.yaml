@@ -8,7 +8,7 @@ environment:
 
 
 dependencies:
-  path:
+  path: ">=1.9.0"
   tekartik_build_menu_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
@@ -23,5 +23,5 @@ dependency_overrides:
     path: ../../packages/build_flutter
 
 dev_dependencies:
-  lints: '>=1.0.0'
-  test: '>=1.16.0'
+  lints: ">=5.0.0"
+  test: ">=1.24.0"

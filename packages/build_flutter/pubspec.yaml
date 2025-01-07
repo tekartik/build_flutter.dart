@@ -1,6 +1,6 @@
 name: tekartik_build_flutter
 description: Helper for building flutter project
-version: 1.0.4
+version: 1.0.5
 publish_to: none
 
 environment:
@@ -9,12 +9,12 @@ environment:
 resolution: workspace
 
 dependencies:
-  cv:
-  path: '>=1.8.0'
-  process_run:
-  fs_shim: '>=2.2.1'
-  collection:
-  args:
+  cv: ">=1.1.0+4"
+  path: ">=1.9.0"
+  process_run: ">=1.2.1+1"
+  fs_shim: ">=2.3.3+1"
+  collection: ">=1.18.0"
+  args: ">=2.6.0"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
@@ -26,7 +26,7 @@ dependencies:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
     version: '>=0.13.2'
-  dev_build:
+  dev_build: ">=1.1.0+2"
   tekartik_android_utils:
     git:
       url: https://github.com/tekartik/android_utils.dart
@@ -49,8 +49,12 @@ dependencies:
       url: https://github.com/tekartik/app_build.dart
       ref: dart3a
       path: packages/playstore_publish
-
+  tekartik_common_build:
+    git:
+      url: https://github.com/tekartik/app_build.dart
+      ref: dart3a
+      path: packages/common_build
 
 dev_dependencies:
-  lints: '>=1.0.0'
-  test: '>=1.16.0'
+  lints: ">=5.0.0"
+  test: ">=1.24.0"
