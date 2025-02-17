@@ -7,7 +7,7 @@ environment:
 
 resolution: workspace
 dependencies:
-  dev_build: ">=1.1.0+2"
+  dev_build: ">=1.1.2"
   process_run: ">=1.2.1+1"
   tekartik_common_utils:
     git:

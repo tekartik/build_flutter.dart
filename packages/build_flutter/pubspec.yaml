@@ -26,7 +26,7 @@ dependencies:
       url: https://github.com/tekartik/common_utils.dart
       ref: dart3a
     version: '>=0.13.2'
-  dev_build: ">=1.1.0+2"
+  dev_build: ">=1.1.2"
   tekartik_android_utils:
     git:
       url: https://github.com/tekartik/android_utils.dart
