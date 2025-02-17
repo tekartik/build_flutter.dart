@@ -7,6 +7,7 @@ environment:
 
 resolution: workspace
 dependencies:
+  dev_build: ">=1.1.0+2"
   process_run: ">=1.2.1+1"
   tekartik_common_utils:
     git:
@@ -14,9 +15,13 @@ dependencies:
       ref: dart3a
     version: '>=0.13.2'
   path: ">=1.9.0"
+  tekartik_build_menu_flutter:
+    git:
+      url: https://github.com/tekartik/build_flutter.dart
+      ref: dart3a
+      path: packages/build_menu_flutter
 dev_dependencies:
   test: ">=1.24.0"
-  dev_build: ">=1.1.0+2"
 
 dependency_overrides:
 #  tekartik_build_utils:
