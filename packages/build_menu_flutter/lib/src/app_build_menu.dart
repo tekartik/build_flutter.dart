@@ -21,15 +21,21 @@ Future main(List<String> arguments) async {
 }
 
 /// To deprecate
-void menuAppContent(
-    {String path = '.',
-    List<String>? flavors,
-    AndroidPublisherClient? androidPublisherClient}) {
+void menuAppContent({
+  String path = '.',
+  List<String>? flavors,
+  AndroidPublisherClient? androidPublisherClient,
+}) {
   var builder = FlutterAppBuilder(
-      context: FlutterAppContext(
-          path: path, buildOptions: FlutterAppBuildOptions(flavors: flavors)));
+    context: FlutterAppContext(
+      path: path,
+      buildOptions: FlutterAppBuildOptions(flavors: flavors),
+    ),
+  );
   menuFlutterAppContent(
-      builder: builder, androidPublisherClient: androidPublisherClient);
+    builder: builder,
+    androidPublisherClient: androidPublisherClient,
+  );
 }
 
 void menuFlutterAppFlavorContent({
@@ -76,7 +82,8 @@ void menuFlutterAppFlavorContent({
 
         write('apkinfo: ${await flavorBuilder.getApkInfo()}');
         write(
-            'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}');
+          'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}',
+        );
       });
       item('build aab & apk and copy', () async {
         await androidReady;
@@ -95,19 +102,23 @@ void menuFlutterAppFlavorContent({
       if (androidPublisherClient != null) {
         menu('publish menu', () {
           menuFlutterAppFlavorPublish(
-              flavorBuilder: flavorBuilder, client: androidPublisherClient);
+            flavorBuilder: flavorBuilder,
+            client: androidPublisherClient,
+          );
         });
         item('publish', () async {
           await flavorBuilder.androidPublish(client: androidPublisherClient);
         });
         item('build & publish', () async {
           await flavorBuilder.androidBuildAndPublish(
-              client: androidPublisherClient);
+            client: androidPublisherClient,
+          );
         });
         item('clean, build & publish', () async {
           await flavorBuilder.clean();
           await flavorBuilder.androidBuildAndPublish(
-              client: androidPublisherClient);
+            client: androidPublisherClient,
+          );
         });
       }
     });
@@ -115,9 +126,10 @@ void menuFlutterAppFlavorContent({
 }
 
 /// Menu flutter app publish
-void menuFlutterAppFlavorPublish(
-    {required FlutterAppFlavorBuilder flavorBuilder,
-    required AndroidPublisherClient client}) {
+void menuFlutterAppFlavorPublish({
+  required FlutterAppFlavorBuilder flavorBuilder,
+  required AndroidPublisherClient client,
+}) {
   late ApkInfo apkInfo;
   late AndroidPublisher publisher;
   List<String>? tracksOrNull;
@@ -144,14 +156,18 @@ void menuFlutterAppFlavorPublish(
     write(tracks);
   });
   item('promote internal to production', () async {
-    var internalVersionCode =
-        await publisher.getTrackVersionCode(trackName: publishTrackInternal);
-    var productionVersionCode =
-        await publisher.getTrackVersionCode(trackName: publishTrackProduction);
+    var internalVersionCode = await publisher.getTrackVersionCode(
+      trackName: publishTrackInternal,
+    );
+    var productionVersionCode = await publisher.getTrackVersionCode(
+      trackName: publishTrackProduction,
+    );
     write('internal: $internalVersionCode production: $productionVersionCode');
     if ((internalVersionCode ?? 0) > (productionVersionCode ?? 0)) {
       await publisher.publishVersionCode(
-          trackName: publishTrackProduction, versionCode: internalVersionCode!);
+        trackName: publishTrackProduction,
+        versionCode: internalVersionCode!,
+      );
     }
   });
   item('bundles per tracks', () async {
@@ -169,15 +185,14 @@ void menuFlutterAppFlavorPublish(
     write(tracks);
   });
   item('publish internal', () async {
-    await flavorBuilder.androidPublish(
-      client: client,
-    );
+    await flavorBuilder.androidPublish(client: client);
   });
 }
 
-void menuFlutterAppContent(
-    {required FlutterAppBuilder builder,
-    AndroidPublisherClient? androidPublisherClient}) {
+void menuFlutterAppContent({
+  required FlutterAppBuilder builder,
+  AndroidPublisherClient? androidPublisherClient,
+}) {
   var appPath = builder.path;
   var flavors = builder.flavors;
   var appShell = Shell(workingDirectory: appPath);
@@ -268,21 +283,26 @@ void menuFlutterAppContent(
     menu('flavors', () {
       for (var flavorBuilder in builder.flavorBuilders) {
         menuFlutterAppFlavorContent(
-            flavorBuilder: flavorBuilder,
-            androidPublisherClient: androidPublisherClient);
+          flavorBuilder: flavorBuilder,
+          androidPublisherClient: androidPublisherClient,
+        );
       }
     });
   } else {
     menuFlutterAppFlavorContent(
-        flavorBuilder: builder.flavorBuilders.first,
-        androidPublisherClient: androidPublisherClient);
+      flavorBuilder: builder.flavorBuilders.first,
+      androidPublisherClient: androidPublisherClient,
+    );
   }
   menu('build', () {
     for (var platform in buildHostSupportedPlatforms) {
       item('build $platform', () async {
         if (await checkFlutterSupported()) {
-          await buildProject(appPath,
-              platform: platform, flavor: currentFlavor);
+          await buildProject(
+            appPath,
+            platform: platform,
+            flavor: currentFlavor,
+          );
         }
       });
     }
@@ -305,16 +325,20 @@ void menuFlutterAppContent(
       });
       if (currentFlavor != null) {
         item('flutter run -d $platform --flavor <current>', () async {
-          await appShell
-              .run('flutter run -d $platform --flavor $currentFlavor');
+          await appShell.run(
+            'flutter run -d $platform --flavor $currentFlavor',
+          );
         });
       }
     }
   });
   item('list sub projects', () async {
-    await recursivePackagesRun([appPath], action: (path) {
-      write('project: ${absolute(path)}');
-    });
+    await recursivePackagesRun(
+      [appPath],
+      action: (path) {
+        write('project: ${absolute(path)}');
+      },
+    );
   });
   item('run_ci', () async {
     await packageRunCi(appPath);
@@ -323,8 +347,10 @@ void menuFlutterAppContent(
     await packageRunCi(appPath, options: PackageRunCiOptions(pubGetOnly: true));
   });
   item('pub_upgrade', () async {
-    await packageRunCi(appPath,
-        options: PackageRunCiOptions(pubUpgradeOnly: true));
+    await packageRunCi(
+      appPath,
+      options: PackageRunCiOptions(pubUpgradeOnly: true),
+    );
   });
   item('flutter clean', () async {
     if (await checkFlutterSupported()) {

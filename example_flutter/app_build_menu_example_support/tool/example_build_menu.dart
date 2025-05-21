@@ -10,8 +10,10 @@ Future main(List<String> arguments) async {
     if (Platform.isWindows || Platform.isLinux) {
       item('build and run marker', () async {
         await createProject(appPath);
-        await buildProject(appPath,
-            target: 'lib/create_file_and_exit_main.dart');
+        await buildProject(
+          appPath,
+          target: 'lib/create_file_and_exit_main.dart',
+        );
         await runBuiltProject(appPath);
       });
       item('build and run example', () async {

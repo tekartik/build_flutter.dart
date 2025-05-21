@@ -46,7 +46,8 @@ Future main(List<String> arguments) async {
         var apkInfo = await flavorBuilder.getApkInfo();
         await flavorBuilder.installDeployedApk(apkInfo: apkInfo);
         await flavorBuilder.runBuiltAndroidApk(
-            activity: 'com.example.app_build_menu_example.MainActivity');
+          activity: 'com.example.app_build_menu_example.MainActivity',
+        );
       });
     }
     menuAppContent(path: appPath);

@@ -37,13 +37,15 @@ class FlutterProject {
   bool get hasFlavors => flavors.isNotEmpty;
 
   /// windows/posix path ok
-  FlutterProject(String path,
-      {
-      /// Default to empty
-      List<String>? flavors,
-      String? buildPlatform,
-      String? androidModule,
-      String? buildType}) {
+  FlutterProject(
+    String path, {
+
+    /// Default to empty
+    List<String>? flavors,
+    String? buildPlatform,
+    String? androidModule,
+    String? buildType,
+  }) {
     this.flavors = flavors ?? [];
     this.buildPlatform = buildPlatformCurrent;
     this.androidModule = androidModule ?? defaultAppAndroidModule;
@@ -67,7 +69,6 @@ class FlutterProject {
       join(getAbsolutePath(), getAppBundlePath());
 
   @Deprecated('use getAbsoluteAppBundlePath')
-
   /// Get the absolute aab path
   String getAbsoluteAabPath() => join(getAbsolutePath(), getAppBundlePath());
 
@@ -87,8 +88,10 @@ class FlutterProject {
   }
 
   /// Single flavor supported
-  Future<void> _buildAndroid(
-      {required String subcommand, String? target}) async {
+  Future<void> _buildAndroid({
+    required String subcommand,
+    String? target,
+  }) async {
     /// Recreate and build a project
     await shell.run('''
     flutter build $subcommand${target != null ? ' --target ${shellArgument(target)}' : ''}${hasFlavors ? ' --flavor $flavor' : ''}
@@ -108,7 +111,10 @@ class FlutterProject {
     var parts = [androidModule, ...flavors, buildType];
 
     return join(
-        moduleBuildDirOutput, 'flutter-apk', '${_minusWords(parts)}.apk');
+      moduleBuildDirOutput,
+      'flutter-apk',
+      '${_minusWords(parts)}.apk',
+    );
     //} else {
     //  return join(moduleBuildDirOutput, 'flutter-apk', app-release.apk';'
     //}
@@ -126,15 +132,19 @@ class FlutterProject {
 
     // build/app/outputs/bundle/release/app-release.aab
     // 'build/app/outputs/bundle/customRelease/app-custom-release.aab';
-    return join(moduleBuildDirOutput, 'bundle',
-        _lowerCamelCaseWords(folderParts), '${_minusWords(parts)}.aab');
+    return join(
+      moduleBuildDirOutput,
+      'bundle',
+      _lowerCamelCaseWords(folderParts),
+      '${_minusWords(parts)}.aab',
+    );
     //} else {
     //  return join(moduleBuildDirOutput, 'flutter-apk', app-release.apk';'
     //}
   }
 
-// 'build/app/outputs/bundle/customRelease/app-custom-release.aab';
-// _lowerCamelCaseWords(parts),
+  // 'build/app/outputs/bundle/customRelease/app-custom-release.aab';
+  // _lowerCamelCaseWords(parts),
 
   /// Get the absolute path
   String getAbsolutePathFromRelative(String relative) {

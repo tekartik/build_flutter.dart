@@ -26,9 +26,10 @@ Future<void> deleteFile(String path) async {
 }
 
 /// release exe dir (linux and windows for now)
-String get platformExeDir => Platform.isLinux
-    ? _linuxExeDir
-    : (Platform.isMacOS ? _macOSExeDir : _windowsExeDir);
+String get platformExeDir =>
+    Platform.isLinux
+        ? _linuxExeDir
+        : (Platform.isMacOS ? _macOSExeDir : _windowsExeDir);
 
 /// Current build platform
 ///
@@ -45,22 +46,22 @@ var _buildHostSupportedBuildPlatforms = {
   buildHostWindows: [
     buildPlatformWindows,
     buildPlatformAndroid,
-    buildPlatformWeb
+    buildPlatformWeb,
   ],
   buildHostLinux: [buildPlatformLinux, buildPlatformAndroid, buildPlatformWeb],
   buildHostMacOS: [
     buildPlatformMacOS,
     buildPlatformAndroid,
     buildPlatformIOS,
-    buildPlatformWeb
+    buildPlatformWeb,
   ],
 };
 
 /// Get the supported build platforms for the current host.
-List<String>? getBuildHostSupportedPlatforms(
-    {
-    // Default to buildFlatformCurrent, mainly used for testing
-    String? buildHost}) {
+List<String>? getBuildHostSupportedPlatforms({
+  // Default to buildFlatformCurrent, mainly used for testing
+  String? buildHost,
+}) {
   return _buildHostSupportedBuildPlatforms[buildHost ?? buildHostCurrent];
 }
 
@@ -119,8 +120,12 @@ Future<String> getBuildProjectAppFilename(String path) async {
 }
 
 /// Recreate and build a project
-Future<void> buildProject(String path,
-    {String? target, String? platform, String? flavor}) async {
+Future<void> buildProject(
+  String path, {
+  String? target,
+  String? platform,
+  String? flavor,
+}) async {
   var shell = Shell(workingDirectory: path);
   platform ??= buildPlatformCurrent;
   var subcommandApk = 'apk';
@@ -142,8 +147,10 @@ Future<void> buildProject(String path,
 }
 
 /// Create project and checkout from git
-Future<void> createProjectAndCheckoutFromGit(String path,
-    {String? platform}) async {
+Future<void> createProjectAndCheckoutFromGit(
+  String path, {
+  String? platform,
+}) async {
   platform ??= buildPlatformCurrent;
   await createProject(path, platform: platform);
   await checkoutFromGit(path, platform: platform);
@@ -160,7 +167,6 @@ Future<void> checkoutFromGit(String path, {String? platform}) async {
 }
 
 @Deprecated('moved')
-
 /// Get the supported platforms
 var getBuildSupportedPlatforms = [
   buildPlatformCurrent,

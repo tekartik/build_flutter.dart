@@ -79,8 +79,15 @@ class FlutterDevice extends CvModelBase {
   /// Capabilities
   final capabilities = CvField<Map>('capabilities');
   @override
-  CvFields get fields =>
-      [name, id, isSupported, targetPlatform, emulator, sdk, capabilities];
+  CvFields get fields => [
+    name,
+    id,
+    isSupported,
+    targetPlatform,
+    emulator,
+    sdk,
+    capabilities,
+  ];
 }
 
 /// Flutter device extension
@@ -117,24 +124,25 @@ class FlutterDeviceCapabilities extends CvModelBase {
   final startPaused = CvField<bool>('startPaused');
   @override
   CvFields get fields => [
-        hotReload,
-        hotRestart,
-        screenshot,
-        fastStart,
-        flutterExit,
-        hardwareRendering,
-        startPaused
-      ];
+    hotReload,
+    hotRestart,
+    screenshot,
+    fastStart,
+    flutterExit,
+    hardwareRendering,
+    startPaused,
+  ];
 }
 
 /// Get flutter devices
 Future<List<FlutterDevice>> getFlutterDevices() async {
   cvAddConstructors([FlutterDevice.new, FlutterDeviceCapabilities.new]);
   var shell = Shell(verbose: false);
-  var list = (jsonDecode((await shell.run('flutter devices --machine')).outText)
-          as List)
-      .cast<Map>()
-      .cv<FlutterDevice>();
+  var list =
+      (jsonDecode((await shell.run('flutter devices --machine')).outText)
+              as List)
+          .cast<Map>()
+          .cv<FlutterDevice>();
   return list;
 }
 

@@ -34,7 +34,7 @@ var buildPlatformsAll = [
   buildPlatformLinux,
   buildPlatformWindows,
   buildPlatformMacOS,
-  buildPlatformWeb
+  buildPlatformWeb,
 ];
 
 /// All desktop build platforms
@@ -45,13 +45,8 @@ var buildPlatformsDesktopAll = [
 ];
 
 /// All build hosts
-var buildHostsAll = [
-  buildHostLinux,
-  buildHostWindows,
-  buildHostMacOS,
-];
+var buildHostsAll = [buildHostLinux, buildHostWindows, buildHostMacOS];
 
 @Deprecated('Use getBuildHostSupportedPlatforms')
-
 /// Supported build platforms
 var buildSupportedPlatforms = getBuildHostSupportedPlatforms();

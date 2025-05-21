@@ -41,8 +41,10 @@ class FlutterAppContext {
   }
 
   /// Copy with
-  FlutterAppContext copyWith(
-      {String? path, FlutterAppBuildOptions? buildOptions}) {
+  FlutterAppContext copyWith({
+    String? path,
+    FlutterAppBuildOptions? buildOptions,
+  }) {
     return FlutterAppContext(
       path: path ?? this.path,
       buildOptions: buildOptions ?? this.buildOptions,
@@ -89,7 +91,8 @@ class FlutterAppFlavorBuilder {
     var sb = StringBuffer();
     if (flavor != null) {
       sb.write(
-          ' --flavor $flavor  --dart-define=$envFlavorKey="$flavor" --target lib/main_$flavor.dart');
+        ' --flavor $flavor  --dart-define=$envFlavorKey="$flavor" --target lib/main_$flavor.dart',
+      );
     }
     return sb.toString();
   }
@@ -126,29 +129,35 @@ class FlutterAppFlavorBuilder {
   /// Get apk path
   String getApkPath() {
     return _getAndroidBuiltObjectPath(
-        flavor: flavor, module: module, extension: 'apk', folder: 'apk');
+      flavor: flavor,
+      module: module,
+      extension: 'apk',
+      folder: 'apk',
+    );
   }
 
   /// Get aab path
   String getAabPath({String? module}) {
     return _getAndroidBuiltObjectPath(
-        flavor: flavor,
-        module: module,
-        extension: 'aab',
-        folder: 'bundle',
-        useFlavorToPath: true);
+      flavor: flavor,
+      module: module,
+      extension: 'aab',
+      folder: 'bundle',
+      useFlavorToPath: true,
+    );
   }
 
   /// object: apk, aab
   /// folder: apk, bundle
-  String _getAndroidBuiltObjectPath(
-      {String? flavor,
-      String? module,
+  String _getAndroidBuiltObjectPath({
+    String? flavor,
+    String? module,
 
-      /// Needed for aab convert dev-release to devRelease
-      bool? useFlavorToPath,
-      required String extension,
-      required String folder}) {
+    /// Needed for aab convert dev-release to devRelease
+    bool? useFlavorToPath,
+    required String extension,
+    required String folder,
+  }) {
     module ??= 'app';
     var buildTop = join(path, 'build', module, 'outputs', folder);
     if (flavor != null) {
@@ -156,8 +165,11 @@ class FlutterAppFlavorBuilder {
       var objectName = '$module-$flavor-release.$extension';
       String objectFile;
       if (useFlavorToPath ?? false) {
-        objectFile =
-            join(buildTop, flavorToPath('$flavor-release'), objectName);
+        objectFile = join(
+          buildTop,
+          flavorToPath('$flavor-release'),
+          objectName,
+        );
       } else {
         objectFile = join(buildTop, flavorPath, 'release', objectName);
       }
@@ -183,20 +195,24 @@ class FlutterAppFlavorBuilder {
   }
 
   /// Either publisher or api must be provided
-  Future<void> androidBuildAndPublish(
-      {required AndroidPublisherClient client}) async {
+  Future<void> androidBuildAndPublish({
+    required AndroidPublisherClient client,
+  }) async {
     var apkInfo = await buildAndroidAndCopy();
     await androidPublish(client: client, apkInfo: apkInfo);
   }
 
   /// Assume androd build and copy has been called
-  Future<void> androidPublish(
-      {required AndroidPublisherClient client,
-      apk_utils.ApkInfo? apkInfo}) async {
+  Future<void> androidPublish({
+    required AndroidPublisherClient client,
+    apk_utils.ApkInfo? apkInfo,
+  }) async {
     apkInfo ??= await getApkInfo();
     var versionCode = int.parse(apkInfo.versionCode!);
-    var publisher =
-        AndroidPublisher(packageName: apkInfo.name!, client: client);
+    var publisher = AndroidPublisher(
+      packageName: apkInfo.name!,
+      client: client,
+    );
 
     var aabPath = getAabPath();
     await publisher.uploadBundleAndPublish(
@@ -310,8 +326,10 @@ class FlutterAppFlavorBuilder {
   }
 
   /// Run the build apk
-  Future<void> runBuiltAndroidApk(
-      {apk_utils.ApkInfo? apkInfo, required String activity}) async {
+  Future<void> runBuiltAndroidApk({
+    apk_utils.ApkInfo? apkInfo,
+    required String activity,
+  }) async {
     apkInfo ??= await getApkInfo();
 
     var ipDevice =
@@ -320,7 +338,8 @@ class FlutterAppFlavorBuilder {
       var startParam = '${apkInfo.name}/$activity';
       var shell = Shell(workingDirectory: path);
       await shell.run(
-          'adb -s ${shellArgument(ipDevice)} shell am start -n ${shellArgument(startParam)}');
+        'adb -s ${shellArgument(ipDevice)} shell am start -n ${shellArgument(startParam)}',
+      );
     } else {
       stderr.writeln('No android device found');
     }
@@ -334,7 +353,8 @@ class FlutterAppFlavorBuilder {
     if (ipDevice != null) {
       var shell = Shell(workingDirectory: path);
       await shell.run(
-          'adb -s ${shellArgument(ipDevice)} install ${shellArgument(apkPath)}');
+        'adb -s ${shellArgument(ipDevice)} install ${shellArgument(apkPath)}',
+      );
     } else {
       stderr.writeln('No android device found');
     }
@@ -380,7 +400,6 @@ class FlutterAppBuilder implements CommonAppBuilder {
       FlutterAppFlavorBuilder(appBuilder: this, flavor: null);
 
   @Deprecated('Use defaultFlavorBuilder')
-
   /// Default flavor builder
   FlutterAppFlavorBuilder get defaultFlavorBuild => defaultFlavorBuilder;
 

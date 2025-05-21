@@ -7,19 +7,22 @@ import 'package:test/test.dart';
 
 void main() {
   group('project', () {
-    test('test_create_project', () async {
-      var dir = join('.dart_tool', 'tekartik_build_flutter', 'test', 'app1');
-      await Directory(dir).create(recursive: true);
-      await createProjectAndCheckoutFromGit(dir);
-      // Try to build but failure is ok
-      try {
-        await buildProject(dir);
-      } catch (e) {
-        stderr.writeln('error building project: $e');
-      }
-    },
-        skip: !(Platform.isLinux || Platform.isWindows || Platform.isMacOS),
-        timeout: const Timeout(Duration(minutes: 10)));
+    test(
+      'test_create_project',
+      () async {
+        var dir = join('.dart_tool', 'tekartik_build_flutter', 'test', 'app1');
+        await Directory(dir).create(recursive: true);
+        await createProjectAndCheckoutFromGit(dir);
+        // Try to build but failure is ok
+        try {
+          await buildProject(dir);
+        } catch (e) {
+          stderr.writeln('error building project: $e');
+        }
+      },
+      skip: !(Platform.isLinux || Platform.isWindows || Platform.isMacOS),
+      timeout: const Timeout(Duration(minutes: 10)),
+    );
     test('buildPlatformCurrent', () {
       var platform = buildPlatformCurrent;
       if (Platform.isWindows) {
@@ -39,54 +42,69 @@ void main() {
       var platform = buildPlatformCurrent;
 
       expect(
-          getBuildHostSupportedPlatforms(buildHost: buildHostWindows),
-          unorderedEquals(
-              [buildPlatformAndroid, buildPlatformWindows, buildPlatformWeb]));
+        getBuildHostSupportedPlatforms(buildHost: buildHostWindows),
+        unorderedEquals([
+          buildPlatformAndroid,
+          buildPlatformWindows,
+          buildPlatformWeb,
+        ]),
+      );
       try {
         getBuildHostSupportedPlatforms(buildHost: 'dummy');
         fail('should fail');
       } catch (_) {}
 
       expect(
-          getBuildHostSupportedPlatforms(buildHost: buildHostLinux),
-          unorderedEquals(
-              [buildPlatformAndroid, buildPlatformLinux, buildPlatformWeb]));
+        getBuildHostSupportedPlatforms(buildHost: buildHostLinux),
+        unorderedEquals([
+          buildPlatformAndroid,
+          buildPlatformLinux,
+          buildPlatformWeb,
+        ]),
+      );
 
       expect(buildHostsAll, contains(buildHostCurrent));
 
       expect(
-          getBuildHostSupportedPlatforms(buildHost: buildHostMacOS),
-          unorderedEquals([
-            buildPlatformAndroid,
-            buildPlatformIOS,
-            buildPlatformMacOS,
-            buildPlatformWeb
-          ]));
+        getBuildHostSupportedPlatforms(buildHost: buildHostMacOS),
+        unorderedEquals([
+          buildPlatformAndroid,
+          buildPlatformIOS,
+          buildPlatformMacOS,
+          buildPlatformWeb,
+        ]),
+      );
       if (Platform.isWindows) {
         expect(
-            getBuildHostSupportedPlatforms(),
-            unorderedEquals([
-              buildPlatformAndroid,
-              buildPlatformWindows,
-              buildPlatformWeb
-            ]));
+          getBuildHostSupportedPlatforms(),
+          unorderedEquals([
+            buildPlatformAndroid,
+            buildPlatformWindows,
+            buildPlatformWeb,
+          ]),
+        );
         expect(buildHostCurrent, 'windows');
       } else if (Platform.isLinux) {
         expect(
-            getBuildHostSupportedPlatforms(),
-            unorderedEquals(
-                [buildPlatformAndroid, buildPlatformLinux, buildPlatformWeb]));
+          getBuildHostSupportedPlatforms(),
+          unorderedEquals([
+            buildPlatformAndroid,
+            buildPlatformLinux,
+            buildPlatformWeb,
+          ]),
+        );
         expect(buildHostCurrent, 'linux');
       } else if (Platform.isMacOS) {
         expect(platform, buildPlatformMacOS);
         expect(
-            getBuildHostSupportedPlatforms(),
-            unorderedEquals([
-              buildPlatformAndroid,
-              buildPlatformIOS,
-              buildPlatformMacOS,
-              buildPlatformWeb
-            ]));
+          getBuildHostSupportedPlatforms(),
+          unorderedEquals([
+            buildPlatformAndroid,
+            buildPlatformIOS,
+            buildPlatformMacOS,
+            buildPlatformWeb,
+          ]),
+        );
         expect(buildHostCurrent, 'macos');
       }
     });

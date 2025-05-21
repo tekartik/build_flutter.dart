@@ -8,22 +8,25 @@ import 'package:test/test.dart';
 Future<void> main() async {
   var createdOnce = false;
   var path = join('.dart_tool', 'repo_support', 'test', 'app1');
-  group('flutter_build', () {
-    Future<void> createLocalProject({bool? force}) async {
-      if (!createdOnce && (force == true || !Directory(path).existsSync())) {
-        await createProject(path, platform: buildPlatformWeb);
-        createdOnce = true;
+  group(
+    'flutter_build',
+    () {
+      Future<void> createLocalProject({bool? force}) async {
+        if (!createdOnce && (force == true || !Directory(path).existsSync())) {
+          await createProject(path, platform: buildPlatformWeb);
+          createdOnce = true;
+        }
       }
-    }
 
-    setUpAll(() async {
-      await createLocalProject();
-    });
-    test('build web', () async {
-      var shell = Shell(workingDirectory: path);
-      await shell.run('flutter build web');
-    });
-  },
-      skip: !isFlutterSupportedSync,
-      timeout: const Timeout(Duration(minutes: 5)));
+      setUpAll(() async {
+        await createLocalProject();
+      });
+      test('build web', () async {
+        var shell = Shell(workingDirectory: path);
+        await shell.run('flutter build web');
+      });
+    },
+    skip: !isFlutterSupportedSync,
+    timeout: const Timeout(Duration(minutes: 5)),
+  );
 }

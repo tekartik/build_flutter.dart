@@ -4,8 +4,12 @@ import 'dart:io';
 
 import 'package:path/path.dart';
 
-var markerFile =
-    join('.dart_tool', 'app_build_menu_example', 'data', 'marker.txt');
+var markerFile = join(
+  '.dart_tool',
+  'app_build_menu_example',
+  'data',
+  'marker.txt',
+);
 Future<void> main() async {
   print('Enter create_file_and_exit');
   print('current dir: ${Directory.current}');
