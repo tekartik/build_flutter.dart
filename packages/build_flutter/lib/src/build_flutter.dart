@@ -26,10 +26,9 @@ Future<void> deleteFile(String path) async {
 }
 
 /// release exe dir (linux and windows for now)
-String get platformExeDir =>
-    Platform.isLinux
-        ? _linuxExeDir
-        : (Platform.isMacOS ? _macOSExeDir : _windowsExeDir);
+String get platformExeDir => Platform.isLinux
+    ? _linuxExeDir
+    : (Platform.isMacOS ? _macOSExeDir : _windowsExeDir);
 
 /// Current build platform
 ///
