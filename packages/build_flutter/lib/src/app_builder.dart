@@ -197,15 +197,21 @@ class FlutterAppFlavorBuilder {
   /// Either publisher or api must be provided
   Future<void> androidBuildAndPublish({
     required AndroidPublisherClient client,
+    PublishOptions? publishOptions,
   }) async {
     var apkInfo = await buildAndroidAndCopy();
-    await androidPublish(client: client, apkInfo: apkInfo);
+    await androidPublish(
+      client: client,
+      apkInfo: apkInfo,
+      publishOptions: publishOptions,
+    );
   }
 
   /// Assume androd build and copy has been called
   Future<void> androidPublish({
     required AndroidPublisherClient client,
     apk_utils.ApkInfo? apkInfo,
+    PublishOptions? publishOptions,
   }) async {
     apkInfo ??= await getApkInfo();
     var versionCode = int.parse(apkInfo.versionCode!);
@@ -217,8 +223,10 @@ class FlutterAppFlavorBuilder {
     var aabPath = getAabPath();
     await publisher.uploadBundleAndPublish(
       aabPath: aabPath,
-      trackName: publishTrackInternal,
+      trackName: publishOptions?.track ?? publishTrackInternal,
       versionCode: versionCode,
+      changesNotSentForReview: publishOptions?.changesNotSentForReview,
+
       //    changesNotSentForReview: true
     );
 
