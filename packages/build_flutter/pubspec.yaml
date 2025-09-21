@@ -18,41 +18,34 @@ dependencies:
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart
-      ref: dart3a
       path: packages/lints_flutter
     version: '>=0.1.0'
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
     version: '>=0.13.2'
   dev_build: ">=1.1.2"
   tekartik_android_utils:
     git:
       url: https://github.com/tekartik/android_utils.dart
-      ref: dart3a
     version: '>=0.1.0'
   tekartik_app_io_platform:
     git:
       url: https://github.com/tekartik/app_io_utils.dart
-      ref: dart3a
       path: packages/app_platform
     version: '>=0.3.1'
   tekartik_built_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
-      ref: dart3a
       path: packages/built_flutter
     version: '>=0.1.0'
   tekartik_playstore_publish:
     git:
       url: https://github.com/tekartik/app_build.dart
-      ref: dart3a
       path: packages/playstore_publish
   tekartik_common_build:
     git:
       url: https://github.com/tekartik/app_build.dart
-      ref: dart3a
       path: packages/common_build
 
 dev_dependencies:

@@ -12,13 +12,11 @@ dependencies:
   tekartik_common_utils:
     git:
       url: https://github.com/tekartik/common_utils.dart
-      ref: dart3a
     version: '>=0.13.2'
   path: ">=1.9.0"
   tekartik_build_menu_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
-      ref: dart3a
       path: packages/build_menu_flutter
 dev_dependencies:
   test: ">=1.24.0"

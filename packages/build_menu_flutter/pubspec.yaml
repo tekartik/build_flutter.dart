@@ -16,30 +16,25 @@ dependencies:
   tekartik_build_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
-      ref: dart3a
       path: packages/build_flutter
     version: '>=1.0.2'
   uuid: '>=3.0.0-0'
   tekartik_built_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
-      ref: dart3a
       path: packages/built_flutter
     version: '>=0.1.0'
   tekartik_app_args:
     git:
       url: https://github.com/tekartik/app_io_utils.dart
-      ref: dart3a
       path: packages/app_args
     version: '>=0.1.0'
   tekartik_android_utils:
     git:
       url: https://github.com/tekartik/android_utils.dart
-      ref: dart3a
   tekartik_appstore_publish:
     git:
       url: https://github.com/tekartik/app_build.dart
-      ref: dart3a
       path: packages/appstore_publish
 
 dev_dependencies:
