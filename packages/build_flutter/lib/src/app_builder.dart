@@ -86,12 +86,23 @@ class FlutterAppFlavorBuilder {
   /// Aabs deploy path (folder
   String get aabsDeployPath => appBuilder.aabsDeployPath;
 
+  String _getTargetEntryPoint({required String? flavor}) {
+    if (flavor != null) {
+      var entryPoint = 'lib/main_$flavor.dart';
+      if (File(join(path, entryPoint)).existsSync()) {
+        return entryPoint;
+      }
+    }
+    return 'lib/main.dart';
+  }
+
   /// Get flutter target option
   String getFlutterTargetOption({String? flavor}) {
+    var localFlavor = flavor ?? this.flavor;
     var sb = StringBuffer();
-    if (flavor != null) {
+    if (localFlavor != null) {
       sb.write(
-        ' --flavor $flavor  --dart-define=$envFlavorKey="$flavor" --target lib/main_$flavor.dart',
+        ' --flavor $flavor  --dart-define=$envFlavorKey="$flavor" --target ${shellArgument(_getTargetEntryPoint(flavor: localFlavor))}',
       );
     }
     return sb.toString();
@@ -226,6 +237,7 @@ class FlutterAppFlavorBuilder {
       trackName: publishOptions?.track ?? publishTrackInternal,
       versionCode: versionCode,
       changesNotSentForReview: publishOptions?.changesNotSentForReview,
+      releaseStatus: publishOptions?.releaseStatus,
 
       //    changesNotSentForReview: true
     );
