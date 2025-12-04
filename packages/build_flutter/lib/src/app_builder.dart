@@ -415,6 +415,11 @@ class FlutterAppBuilder implements CommonAppBuilder {
     }
   }
 
+  /// Get flavor builder
+  FlutterAppFlavorBuilder flavorBuilder([String? flavor]) {
+    return flavorBuilders.firstWhere((element) => element.flavor == flavor);
+  }
+
   /// Default flavor builder
   FlutterAppFlavorBuilder get defaultFlavorBuilder =>
       FlutterAppFlavorBuilder(appBuilder: this, flavor: null);
