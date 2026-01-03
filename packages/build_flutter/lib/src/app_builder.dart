@@ -1,13 +1,17 @@
 import 'dart:io';
 
-import 'package:fs_shim/utils/io/copy.dart';
+//import 'package:fs_shim/utils/io/copy.dart';
+import 'package:fs_shim/utils/io/copy.dart' show copyFile;
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 import 'package:tekartik_android_utils/apk_utils.dart' as apk_utils;
+//import 'package:tekartik_build_flutter/build_flutter.dart' hide deleteFile;
 import 'package:tekartik_build_flutter/flutter_devices.dart';
 import 'package:tekartik_built_flutter/constant.dart';
 import 'package:tekartik_common_build/common_app_builder.dart';
 import 'package:tekartik_playstore_publish/playstore_publish.dart';
+
+import '../build_flutter.dart';
 
 /// Clean a web app
 Future<void> flutterProjectClean(String directory) async {
@@ -441,4 +445,23 @@ class FlutterAppBuilder implements CommonAppBuilder {
 
   /// aab deploy path
   String get aabsDeployPath => join(deployPath, 'aab');
+
+  late final _iosPath = normalize(absolute(join(path, 'ios')));
+
+  /// Clean pods
+  Future<void> iosCleanPods() async {
+    await deleteDir(join(_iosPath, 'Pods'));
+    await deleteDir(join(_iosPath, '.symlinks'));
+    await deleteFile(join(_iosPath, 'Podfile.lock'));
+  }
+
+  /// Pod install
+  Future<void> iosPodInstall({bool? repoUpdate}) async {
+    var shell = Shell().cd(_iosPath);
+    if (repoUpdate ?? false) {
+      await shell.run('pod install --repo-update');
+    } else {
+      await shell.run('pod install');
+    }
+  }
 }

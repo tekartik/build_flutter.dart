@@ -13,14 +13,22 @@ var _macOSExeDir = join('build', 'macos', 'Build', 'Products', 'Release');
 
 /// Safe delete a directory
 Future<void> deleteDir(String path) async {
+  var dir = Directory(path);
   try {
+    if (dir.existsSync()) {
+      stdout.writeln('Deleting ${basename(path)}/');
+    }
     await Directory(path).delete(recursive: true);
   } catch (_) {}
 }
 
 /// Safe delete a file
 Future<void> deleteFile(String path) async {
+  var file = File(path);
   try {
+    if (file.existsSync()) {
+      stdout.writeln('Deleting ${basename(path)}');
+    }
     await File(path).delete(recursive: true);
   } catch (_) {}
 }

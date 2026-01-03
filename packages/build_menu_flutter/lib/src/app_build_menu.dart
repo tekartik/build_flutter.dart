@@ -261,16 +261,16 @@ void menuFlutterAppContent({
       menu('ios pod', () {
         var iosPath = normalize(absolute(join(appPath, 'ios')));
         item('Delete podfile.lock && Pods', () async {
-          await File(join(iosPath, 'Podfile.lock')).delete(recursive: true);
-          await Directory(join(iosPath, 'Pods')).delete(recursive: true);
+          await builder.iosCleanPods();
+          write('done');
         });
         item('pod install', () async {
-          var shell = Shell().cd(iosPath);
-          await shell.run('pod install');
+          await builder.iosPodInstall();
+          write('done');
         });
         item('pod install --repo-update', () async {
-          var shell = Shell().cd(iosPath);
-          await shell.run('pod install --repo-update');
+          await builder.iosPodInstall(repoUpdate: true);
+          write('done');
         });
         item('pod repo update', () async {
           var shell = Shell().cd(iosPath);
