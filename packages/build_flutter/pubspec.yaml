@@ -47,6 +47,10 @@ dependencies:
     git:
       url: https://github.com/tekartik/app_build.dart
       path: packages/common_build
+  tekartik_appstore_publish:
+    git:
+      url: https://github.com/tekartik/app_build.dart
+      path: packages/appstore_publish
 
 dev_dependencies:
   lints: ">=5.0.0"
