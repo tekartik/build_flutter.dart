@@ -258,7 +258,7 @@ void menuFlutterAppContent({
       });
     }
     if (Platform.isMacOS) {
-      menu('ios pod', () {
+      menu('ios', () {
         var iosPath = normalize(absolute(join(appPath, 'ios')));
         item('Delete podfile.lock && Pods', () async {
           await builder.iosCleanPods();
@@ -275,6 +275,10 @@ void menuFlutterAppContent({
         item('pod repo update', () async {
           var shell = Shell().cd(iosPath);
           await shell.run('pod repo update');
+        });
+        item('build config only', () async {
+          await builder.iosBuildConfigOnly();
+          write('done');
         });
       });
     }

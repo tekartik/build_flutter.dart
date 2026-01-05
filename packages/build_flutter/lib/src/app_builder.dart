@@ -448,6 +448,12 @@ class FlutterAppBuilder implements CommonAppBuilder {
 
   late final _iosPath = normalize(absolute(join(path, 'ios')));
 
+  /// To run after modifying the ios project files
+  Future<void> iosBuildConfigOnly() async {
+    var shell = Shell().cd(_iosPath);
+    await shell.run('flutter build ios --config-only');
+  }
+
   /// Clean pods
   Future<void> iosCleanPods() async {
     await deleteDir(join(_iosPath, 'Pods'));
