@@ -2,17 +2,14 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dev_build/build_support.dart';
-import 'package:dev_build/menu/menu_io.dart';
 import 'package:dev_build/package.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart' hide prompt;
 import 'package:tekartik_android_utils/aab_utils.dart';
 // ignore: depend_on_referenced_packages
-import 'package:tekartik_android_utils/build_utils.dart';
-import 'package:tekartik_build_flutter/app_builder.dart';
-import 'package:tekartik_build_flutter/app_publisher.dart';
-import 'package:tekartik_build_flutter/build_flutter.dart';
-import 'package:tekartik_common_utils/list_utils.dart'; // ignore: depend_on_referenced_packages
+import 'package:tekartik_common_utils/list_utils.dart';
+
+import '../app_build_menu.dart'; // ignore: depend_on_referenced_packages
 
 var androidReady = initAndroidBuildEnvironment();
 
@@ -52,6 +49,19 @@ void menuFlutterAppFlavorContent({
   }
 
   menu('flavor ${flavorBuilder.flavorName}', () {
+    menu('run', () async {
+      item('run on device', () async {
+        var deviceId = tkFlutterDeviceIdVar.value;
+        await flavorBuilder.run(deviceId: deviceId);
+      });
+      item('run --release on device', () async {
+        var deviceId = tkFlutterDeviceIdVar.value;
+        await flavorBuilder.run(deviceId: deviceId, release: true);
+      });
+      menu('devices', () {
+        menuFdmContent();
+      });
+    });
     item('clean', () async {
       await flavorBuilder.clean();
     });

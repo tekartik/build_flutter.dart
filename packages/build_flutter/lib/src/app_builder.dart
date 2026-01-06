@@ -128,6 +128,31 @@ class FlutterAppFlavorBuilder {
     await flutterProjectClean(path);
   }
 
+  String _deviceIdArgs(String? deviceId) {
+    var sb = StringBuffer();
+    if (deviceId != null) {
+      sb.write(' --device-id ${shellArgument(deviceId)}');
+    }
+    return sb.toString();
+  }
+
+  /// Clean
+  Future<void> run({String? deviceId, bool? release}) async {
+    var shell = Shell().cd(path);
+    var sb = StringBuffer();
+    if (flavor != null) {
+      sb.write(getFlutterTargetOption(flavor: flavor));
+    }
+    sb.write(_deviceIdArgs(deviceId));
+    if (release ?? false) {
+      sb.write(' --release');
+    }
+    await shell.run(
+      'flutter run'
+      '$sb',
+    );
+  }
+
   /// Flavor to path
   static String flavorToPath(String flavor) {
     var sb = StringBuffer();
