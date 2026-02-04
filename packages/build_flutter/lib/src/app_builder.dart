@@ -57,7 +57,7 @@ class FlutterAppContext {
 }
 
 /// Flutter app flavor builder
-class FlutterAppFlavorBuilder {
+class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// App builder
   final FlutterAppBuilder appBuilder;
 
@@ -65,6 +65,7 @@ class FlutterAppFlavorBuilder {
   final String? flavor;
 
   /// Path
+  @override
   String get path => appBuilder.path;
 
   /// Module
@@ -114,6 +115,7 @@ class FlutterAppFlavorBuilder {
 
   /// Build
   Future<void> build(String buildSubCommand) async {
+    await generateVersionIfNeeded();
     var shell = Shell().cd(path);
     var sb = StringBuffer(buildSubCommand);
     if (flavor != null) {
