@@ -13,8 +13,8 @@ void fbm(List<String> arguments) {
   var parser = ArgumentParser()..addArguments([flagHelp, optionFlavors]);
   var result = parser.parse(arguments);
   if (flagHelp.on) {
-    print('fbm [options] [path]');
-    print(parser.raw.usage);
+    stdout.writeln('fbm [options] [path]');
+    stdout.writeln(parser.raw.usage);
     exit(0);
   }
   var appPath = result.raw.rest;

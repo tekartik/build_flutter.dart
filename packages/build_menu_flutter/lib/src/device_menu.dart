@@ -8,7 +8,7 @@ void menuFdmContent() {
       for (var device in devices) {
         item('${device.name.v} (${device.id.v})', () async {
           await tkFlutterDeviceIdVar.set(device.id.v);
-          print('Selected device: ${device.name} (${device.id})');
+          writeln('Selected device: ${device.name} (${device.id})');
           await popMenu();
         });
       }
@@ -17,13 +17,13 @@ void menuFdmContent() {
   item('Current selected device', () async {
     var deviceId = tkFlutterDeviceIdVar.value;
     if (deviceId != null) {
-      print('Selected device id: $deviceId');
+      writeln('Selected device id: $deviceId');
     } else {
-      print('No device selected');
+      writeln('No device selected');
     }
   });
   item('clear selected device', () async {
     await tkFlutterDeviceIdVar.delete();
-    print('Selected device cleared');
+    writeln('Selected device cleared');
   });
 }

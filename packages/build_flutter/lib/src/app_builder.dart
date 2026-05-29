@@ -311,7 +311,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     if (apkInfo != null) {
       return apkInfo;
     }
-    throw 'no apk info at $apkPath';
+    throw StateError('no apk info at $apkPath');
   }
 
   /// Get sha1
