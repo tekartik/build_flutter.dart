@@ -40,6 +40,10 @@ dependencies:
     git:
       url: https://github.com/tekartik/app_common_utils.dart
       path: app_dev_menu
+  tekartik_flutter_build:
+    git:
+      url: https://github.com/tekartik/app_build.dart
+      path: packages/flutter_build
 
 dev_dependencies:
   lints: ">=6.1.0"

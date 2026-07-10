@@ -8,6 +8,7 @@ import 'package:process_run/shell.dart' hide prompt;
 import 'package:tekartik_android_utils/aab_utils.dart';
 // ignore: depend_on_referenced_packages
 import 'package:tekartik_common_utils/list_utils.dart';
+import 'package:tekartik_flutter_build/app_build_menu.dart';
 
 import '../app_build_menu.dart'; // ignore: depend_on_referenced_packages
 
@@ -33,6 +34,12 @@ void menuAppContent({
     builder: builder,
     androidPublisherClient: androidPublisherClient,
   );
+  menu('web', () {
+    var webBuilder = FlutterWebAppBuilder(
+      options: FlutterWebAppOptions(path: path),
+    );
+    menuFlutterWebAppBuilderContent(builder: webBuilder);
+  });
 }
 
 void menuFlutterAppFlavorContent({
