@@ -35,10 +35,5 @@ jobs:
           channel: ${{ matrix.flutter }}
       - run: dart --version
       - run: flutter --version
-      # Setup sqlite3 lib (linux)
-      - name: Install libsqlite3-dev
-        run: |
-          dart pub global activate --source git https://github.com/tekartik/ci.dart --git-path ci --git-ref dart3a
-          dart pub global run tekartik_ci:setup_sqlite3lib
       - run: dart pub get
       - run: dart run tool/run_ci_flutter.dart
