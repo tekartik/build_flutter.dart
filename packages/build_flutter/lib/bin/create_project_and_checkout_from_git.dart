@@ -19,6 +19,7 @@ Future<void> main(List<String> arguments) async {
   }
   if (result.rest.length > 1) {
     stderr.writeln('One argument maximum');
+
     exit(1);
   }
   var platform = result['platform'] as String?;

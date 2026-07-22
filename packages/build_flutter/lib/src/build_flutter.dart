@@ -18,6 +18,7 @@ Future<void> deleteDir(String path) async {
     if (dir.existsSync()) {
       stdout.writeln('Deleting ${basename(path)}/');
     }
+
     await Directory(path).delete(recursive: true);
   } catch (_) {}
 }
@@ -29,6 +30,7 @@ Future<void> deleteFile(String path) async {
     if (file.existsSync()) {
       stdout.writeln('Deleting ${basename(path)}');
     }
+
     await File(path).delete(recursive: true);
   } catch (_) {}
 }
@@ -159,7 +161,9 @@ Future<void> createProjectAndCheckoutFromGit(
   String? platform,
 }) async {
   platform ??= buildPlatformCurrent;
+
   await createProject(path, platform: platform);
+
   await checkoutFromGit(path, platform: platform);
 }
 

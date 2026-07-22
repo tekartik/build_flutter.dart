@@ -209,6 +209,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
       if (useFlavorToPath ?? false) {
         objectFile = join(
           buildTop,
+
           flavorToPath('$flavor-release'),
           objectName,
         );
@@ -279,9 +280,12 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Build and copy
   Future<apk_utils.ApkInfo> buildAndroidAndCopy() async {
     await buildAndroidApk();
+
     await buildAndroidAab();
     var apkInfo = await getApkInfo();
+
     await copyApk(apkInfo: apkInfo);
+
     await copyAab(apkInfo: apkInfo);
     return apkInfo;
   }
@@ -289,7 +293,9 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Need aab and apk
   Future<void> copyAndroid({String? flavor}) async {
     var apkInfo = await getApkInfo();
+
     await copyApk(apkInfo: apkInfo);
+
     await copyAab(apkInfo: apkInfo);
   }
 
@@ -311,6 +317,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     if (apkInfo != null) {
       return apkInfo;
     }
+
     throw StateError('no apk info at $apkPath');
   }
 
@@ -344,8 +351,10 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     if (!isAbsolute(dst)) {
       dst = join(path, dst);
     }
+
     await Directory(dirname(dst)).create(recursive: true);
     var dstFile = File(dst);
+
     await copyFile(File(src), dstFile);
     stdout.writeln('copy $src to $dst');
     stdout.writeln('  ${basename(dstFile.path)} ${dstFile.statSync().size}');
@@ -484,7 +493,9 @@ class FlutterAppBuilder implements CommonAppBuilder {
   /// Clean pods
   Future<void> iosCleanPods() async {
     await deleteDir(join(_iosPath, 'Pods'));
+
     await deleteDir(join(_iosPath, '.symlinks'));
+
     await deleteFile(join(_iosPath, 'Podfile.lock'));
   }
 
