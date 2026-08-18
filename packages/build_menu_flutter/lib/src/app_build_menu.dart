@@ -102,6 +102,7 @@ void menuFlutterAppFlavorContent({
           'apkinfo: ${jsonEncode((await flavorBuilder.getApkInfo()).toMap())}',
         );
       });
+
       item('build aab & apk and copy', () async {
         await androidReady;
         await flavorBuilder.buildAndroidAndCopy();
@@ -138,6 +139,31 @@ void menuFlutterAppFlavorContent({
           );
         });
       }
+    });
+  });
+  menu('host ($buildPlatformCurrent)', () {
+    enter(() async {
+      write('deploy path: ${flavorBuilder.hostDeployPath}');
+    });
+    item('build', () async {
+      await flavorBuilder.buildHost();
+    });
+    item('run', () async {
+      await flavorBuilder.runHost();
+    });
+    item('build and run', () async {
+      await flavorBuilder.buildHost();
+      await flavorBuilder.runHost();
+    });
+    item('build only (no copy to deploy)', () async {
+      await flavorBuilder.buildHostOnly();
+    });
+    item('copy built to deploy', () async {
+      await flavorBuilder.copyBuiltHostToDeploy();
+    });
+    item('create project, build and run', () async {
+      await flavorBuilder.buildHost(create: true);
+      await flavorBuilder.runHost();
     });
   });
 }

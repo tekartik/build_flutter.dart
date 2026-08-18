@@ -1,7 +1,7 @@
 import 'dart:io';
 
 //import 'package:fs_shim/utils/io/copy.dart';
-import 'package:fs_shim/utils/io/copy.dart' show copyFile;
+import 'package:fs_shim/utils/io/copy.dart' show copyDirectory, copyFile;
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
 import 'package:tekartik_android_utils/apk_utils.dart' as apk_utils;
@@ -220,6 +220,66 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     } else {
       return join(buildTop, 'release', 'app-release.$extension');
     }
+  }
+
+  /// Create the host (desktop) platform project (linux, windows or macos).
+  ///
+  /// The existing platform folder is deleted and re-created.
+  Future<void> createHostProject() async {
+    await createProject(path, platform: buildPlatformCurrent);
+  }
+
+  /// Host (desktop) deploy path (folder), `deploy/linux`, `deploy/windows`,
+  /// `deploy/macos`, suffixed with the flavor when any.
+  String get hostDeployPath => appBuilder.getHostDeployPath(flavor: flavor);
+
+  /// Build the release version for the current host (desktop) platform and
+  /// copy it to the deploy folder.
+  ///
+  /// Set [create] to re-create the host platform project first.
+  Future<void> buildHost({bool? create}) async {
+    await buildHostOnly(create: create);
+    await copyBuiltHostToDeploy();
+  }
+
+  /// Build the release version for the current host (desktop) platform
+  /// without copying it to the deploy folder.
+  ///
+  /// Set [create] to re-create the host platform project first.
+  Future<void> buildHostOnly({bool? create}) async {
+    if (create ?? false) {
+      await createHostProject();
+    }
+    await generateVersionIfNeeded();
+    await buildProject(
+      path,
+      platform: buildPlatformCurrent,
+      flavor: flavor,
+      target: flavor == null ? null : _getTargetEntryPoint(flavor: flavor),
+    );
+  }
+
+  /// Copy the built host (desktop) release to the deploy folder
+  /// ([hostDeployPath]), the destination is deleted first.
+  ///
+  /// Returns the deploy folder path.
+  Future<String> copyBuiltHostToDeploy() async {
+    var src = join(path, platformExeDir);
+    var dst = hostDeployPath;
+    if (!isAbsolute(dst)) {
+      dst = join(path, dst);
+    }
+    await deleteDir(dst);
+    await copyDirectory(Directory(src), Directory(dst));
+    stdout.writeln('copy $src to $dst');
+    return dst;
+  }
+
+  /// Run the built release version for the current host (desktop) platform.
+  ///
+  /// [buildHost] must have been called before.
+  Future<void> runHost() async {
+    await runBuiltProject(path);
   }
 
   /// Build apk
@@ -481,6 +541,16 @@ class FlutterAppBuilder implements CommonAppBuilder {
 
   /// aab deploy path
   String get aabsDeployPath => join(deployPath, 'aab');
+
+  /// Host (desktop) deploy path, `deploy/linux`, `deploy/windows`,
+  /// `deploy/macos`, suffixed with the flavor when any.
+  String getHostDeployPath({String? flavor}) => join(
+    deployPath,
+    flavor == null ? buildPlatformCurrent : '$buildPlatformCurrent-$flavor',
+  );
+
+  /// Host (desktop) deploy path for the default flavor.
+  String get hostDeployPath => getHostDeployPath();
 
   late final _iosPath = normalize(absolute(join(path, 'ios')));
 
