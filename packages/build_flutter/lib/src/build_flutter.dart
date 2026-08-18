@@ -93,6 +93,14 @@ String get _buildHostCurrent {
   }
 }
 
+/// True if the platform project folder (`linux`, `android`...) exists.
+///
+/// [platform] defaults to the current host platform.
+bool hasPlatformProject(String path, {String? platform}) {
+  platform ??= buildPlatformCurrent;
+  return Directory(join(path, platform)).existsSync();
+}
+
 /// Force re-creating a project
 Future<void> createProject(String path, {String? platform}) async {
   platform ??= buildPlatformCurrent;

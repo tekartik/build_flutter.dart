@@ -224,9 +224,14 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
 
   /// Create the host (desktop) platform project (linux, windows or macos).
   ///
-  /// The existing platform folder is deleted and re-created.
-  Future<void> createHostProject() async {
-    await createProject(path, platform: buildPlatformCurrent);
+  /// By default the project is only created if the platform folder does not
+  /// exist yet. Set [force] to delete and re-create it.
+  Future<void> createHostProject({bool? force}) async {
+    var platform = buildPlatformCurrent;
+    if (!(force ?? false) && hasPlatformProject(path, platform: platform)) {
+      return;
+    }
+    await createProject(path, platform: platform);
   }
 
   /// Host (desktop) deploy path (folder), `deploy/linux`, `deploy/windows`,
@@ -236,7 +241,8 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Build the release version for the current host (desktop) platform and
   /// copy it to the deploy folder.
   ///
-  /// Set [create] to re-create the host platform project first.
+  /// The host platform project is created if needed, set [create] to
+  /// force re-creating it first.
   Future<void> buildHost({bool? create}) async {
     await buildHostOnly(create: create);
     await copyBuiltHostToDeploy();
@@ -245,11 +251,10 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Build the release version for the current host (desktop) platform
   /// without copying it to the deploy folder.
   ///
-  /// Set [create] to re-create the host platform project first.
+  /// The host platform project is created if needed, set [create] to
+  /// force re-creating it first.
   Future<void> buildHostOnly({bool? create}) async {
-    if (create ?? false) {
-      await createHostProject();
-    }
+    await createHostProject(force: create);
     await generateVersionIfNeeded();
     await buildProject(
       path,
