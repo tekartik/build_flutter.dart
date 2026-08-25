@@ -325,6 +325,29 @@ void menuFlutterAppContent({
         });
       });
     }
+    // Entitlements are plain project files, they can be modified from any host.
+    menu('macos', () {
+      var macosProject = builder.macosProject;
+      enter(() async {
+        write('macos path: ${absolute(macosProject.macosPath)}');
+        await macosProject.dumpEntitlements();
+      });
+      item('allow internet access (network client)', () async {
+        await macosProject.allowInternetAccess();
+        write('done');
+      });
+      item('disable sandbox (execute binary, open any file)', () async {
+        await macosProject.disableSandbox();
+        write('done');
+      });
+      item('enable sandbox (flutter default)', () async {
+        await macosProject.enableSandbox();
+        write('done');
+      });
+      item('dump entitlements', () async {
+        await macosProject.dumpEntitlements();
+      });
+    });
   });
   if (builder.context.buildOptions?.flavors?.isNotEmpty ?? false) {
     menu('flavors', () {

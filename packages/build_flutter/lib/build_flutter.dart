@@ -12,6 +12,8 @@ export 'src/build_flutter.dart'
         deleteDir,
         deleteFile,
         getBuildProjectAppFilename,
+        getBuildProjectAppPath,
+        getBuildProjectExePath,
         hasPlatformProject,
         buildHostSupportedPlatforms,
         getBuildHostSupportedPlatforms;

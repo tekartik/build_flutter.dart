@@ -15,6 +15,7 @@ dependencies:
   fs_shim: ">=2.3.3+1"
   collection: ">=1.19.1"
   args: ">=2.7.0"
+  xml: ">=6.6.1"
   tekartik_lints_flutter:
     git:
       url: https://github.com/tekartik/common_flutter.dart

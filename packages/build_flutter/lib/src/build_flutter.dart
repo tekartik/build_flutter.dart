@@ -118,11 +118,112 @@ Future<void> createProject(String path, {String? platform}) async {
   await shell.run('flutter create --platforms $platform .');
 }
 
-/// Run the released
-Future<void> runBuiltProject(String path) async {
+/// Find the macOS app bundle (`my_app.app`) in [dirPath], null if none.
+///
+/// [appName] (`my_app.app`) is looked for first, otherwise the first bundle
+/// found is used (the product name can differ from the pubspec name).
+String? _macOSFindAppBundlePath(String dirPath, {String? appName}) {
+  if (appName != null) {
+    var bundlePath = join(dirPath, appName);
+    if (Directory(bundlePath).existsSync()) {
+      return bundlePath;
+    }
+  }
+  var dir = Directory(dirPath);
+  if (dir.existsSync()) {
+    for (var entity in dir.listSync()) {
+      if (entity is Directory && extension(entity.path) == '.app') {
+        return entity.path;
+      }
+    }
+  }
+  return null;
+}
+
+/// Find the executable in a macOS app bundle
+/// (`my_app.app/Contents/MacOS/my_app`), null if none.
+String? _macOSFindAppBundleExePath(String bundlePath) {
+  var macOSDirPath = join(bundlePath, 'Contents', 'MacOS');
+  // Default is the product name (i.e. the bundle name without its extension)
+  var exePath = join(macOSDirPath, basenameWithoutExtension(bundlePath));
+  if (File(exePath).existsSync()) {
+    return exePath;
+  }
+  var macOSDir = Directory(macOSDirPath);
+  if (macOSDir.existsSync()) {
+    for (var entity in macOSDir.listSync()) {
+      if (entity is File) {
+        return entity.path;
+      }
+    }
+  }
+  return null;
+}
+
+/// Get the built app path (relative to the current directory if [path] is
+/// relative).
+///
+/// On macOS this is the `my_app.app` bundle (i.e. a directory), on other
+/// platforms this is the executable itself.
+///
+/// Throws if the project was not built.
+Future<String> getBuildProjectAppPath(String path) async {
+  var exeDirPath = join(path, platformExeDir);
   var appName = await getBuildProjectAppFilename(path);
-  var shell = Shell(workingDirectory: join(path, platformExeDir));
-  await shell.run(join('.', appName));
+  if (Platform.isMacOS) {
+    var bundlePath = _macOSFindAppBundlePath(exeDirPath, appName: appName);
+    if (bundlePath == null) {
+      throw StateError(
+        'No app bundle (.app) found in $exeDirPath, build the project first',
+      );
+    }
+    return bundlePath;
+  }
+  return join(exeDirPath, appName);
+}
+
+/// Get the built executable path (relative to the current directory if [path]
+/// is relative).
+///
+/// On macOS, `my_app.app` is a bundle (i.e. a directory) that cannot be run
+/// as is, the executable it contains
+/// (`my_app.app/Contents/MacOS/my_app`) is returned.
+///
+/// Throws if the project was not built.
+Future<String> getBuildProjectExePath(String path) async {
+  var appPath = await getBuildProjectAppPath(path);
+  if (Platform.isMacOS) {
+    var exePath = _macOSFindAppBundleExePath(appPath);
+    if (exePath == null) {
+      throw StateError('No executable found in $appPath');
+    }
+    return exePath;
+  }
+  return appPath;
+}
+
+/// Run the released
+///
+/// On macOS the app bundle is launched using `open -na`, like a double click
+/// in the Finder (proper activation, new instance, the call returns as soon
+/// as the app is launched).
+///
+/// Set [console] to true to run the executable in the bundle directly
+/// instead: stdout/stderr are then visible and the call waits for the app to
+/// exit (needed in tests). It has no effect on other platforms where the
+/// executable is always run directly.
+Future<void> runBuiltProject(String path, {bool? console}) async {
+  var exeDirPath = join(path, platformExeDir);
+  var shell = Shell(workingDirectory: exeDirPath);
+  if (Platform.isMacOS && !(console ?? false)) {
+    var bundlePath = normalize(absolute(await getBuildProjectAppPath(path)));
+    await shell.run('open -na ${shellArgument(bundlePath)}');
+  } else {
+    var exePath = await getBuildProjectExePath(path);
+    await shell.run(
+      shellArgument(join('.', relative(exePath, from: exeDirPath))),
+    );
+  }
 }
 
 /// Get the app name

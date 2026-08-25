@@ -12,6 +12,7 @@ import 'package:tekartik_common_build/common_app_builder.dart';
 import 'package:tekartik_playstore_publish/playstore_publish.dart';
 
 import '../build_flutter.dart';
+import 'macos_project.dart';
 
 /// Clean a web app
 Future<void> flutterProjectClean(String directory) async {
@@ -606,4 +607,23 @@ class FlutterAppBuilder implements CommonAppBuilder {
       await shell.run('pod install');
     }
   }
+
+  /// Macos project helper (entitlements, sandbox...)
+  late final macosProject = MacosProject(path: path);
+
+  /// Allow internet access (outgoing http/https requests) for the macos app.
+  ///
+  /// Set [server] to also accept incoming connections. See
+  /// [MacosProject.allowInternetAccess].
+  Future<void> macosAllowInternetAccess({bool? server}) =>
+      macosProject.allowInternetAccess(server: server);
+
+  /// Disable the macos app sandbox so that the app can execute a binary and
+  /// open any file.
+  ///
+  /// See [MacosProject.disableSandbox].
+  Future<void> macosDisableSandbox() => macosProject.disableSandbox();
+
+  /// Enable the macos app sandbox back (the flutter default).
+  Future<void> macosEnableSandbox() => macosProject.enableSandbox();
 }
