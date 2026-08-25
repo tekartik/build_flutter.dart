@@ -283,8 +283,31 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Run the built release version for the current host (desktop) platform.
   ///
   /// [buildHost] must have been called before.
-  Future<void> runHost() async {
+  Future<void> runHostRelease() async {
     await runBuiltProject(path);
+  }
+
+  /// Run the app in debug mode on the current host (desktop) platform
+  /// (linux, windows or macos).
+  ///
+  /// The host platform project is created if needed, set [create] to
+  /// force re-creating it first.
+  Future<void> runHost({bool? create}) async {
+    await createHostProject(force: create);
+    await generateVersionIfNeeded();
+    var shell = Shell().cd(path);
+    var sb = StringBuffer();
+    sb.write(_deviceIdArgs(buildPlatformCurrent));
+    sb.write(' --debug');
+    var flavor = this.flavor;
+    if (flavor != null) {
+      // No --flavor here, desktop projects don't handle it.
+      sb.write(
+        ' --dart-define=$envFlavorKey=${shellArgument(flavor)}'
+        ' --target ${shellArgument(_getTargetEntryPoint(flavor: flavor))}',
+      );
+    }
+    await shell.run('flutter run$sb');
   }
 
   /// Build apk
