@@ -9,11 +9,19 @@ environment:
 
 dependencies:
   path: ">=1.9.1"
+  tekartik_build_flutter:
+    git:
+      url: https://github.com/tekartik/build_flutter.dart
+      path: packages/build_flutter
   tekartik_build_menu_flutter:
     git:
       url: https://github.com/tekartik/build_flutter.dart
       path: packages/build_menu_flutter
     version: '>=0.1.0'
+  tekartik_flutter_build:
+    git:
+      url: https://github.com/tekartik/app_build.dart
+      path: packages/flutter_build
 
 dependency_overrides:
   tekartik_build_menu_flutter:
