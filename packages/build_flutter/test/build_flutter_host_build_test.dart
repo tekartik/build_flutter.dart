@@ -10,7 +10,14 @@ void main() {
     test(
       'test_create_project',
       () async {
-        var dir = join('.dart_tool', 'tekartik_build_flutter', 'test', 'app1');
+        // Not app1, which build_flutter_test.dart uses while the test files
+        // run in parallel.
+        var dir = join(
+          '.dart_tool',
+          'tekartik_build_flutter',
+          'test',
+          'app_host1',
+        );
         await Directory(dir).create(recursive: true);
         await createProject(dir);
         // Try to build but failure is ok

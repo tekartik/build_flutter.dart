@@ -49,10 +49,7 @@ void main() {
           buildPlatformWeb,
         ]),
       );
-      try {
-        getBuildHostSupportedPlatforms(buildHost: 'dummy');
-        fail('should fail');
-      } catch (_) {}
+      expect(getBuildHostSupportedPlatforms(buildHost: 'dummy'), isNull);
 
       expect(
         getBuildHostSupportedPlatforms(buildHost: buildHostLinux),

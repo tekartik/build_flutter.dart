@@ -53,6 +53,7 @@ class FlutterAppContext {
     return FlutterAppContext(
       path: path ?? this.path,
       buildOptions: buildOptions ?? this.buildOptions,
+      module: module,
     );
   }
 }
@@ -105,13 +106,18 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Get flutter target option
   String getFlutterTargetOption({String? flavor}) {
     var localFlavor = flavor ?? this.flavor;
-    var sb = StringBuffer();
-    if (localFlavor != null) {
-      sb.write(
-        ' --flavor $flavor  --dart-define=$envFlavorKey="$flavor" --target ${shellArgument(_getTargetEntryPoint(flavor: localFlavor))}',
-      );
+    if (localFlavor == null) {
+      return '';
     }
-    return sb.toString();
+    return ' --flavor ${shellArgument(localFlavor)}'
+        '${_flavorDartDefineAndTargetOption(localFlavor)}';
+  }
+
+  /// The flavor dart define and the flavor entry point, without `--flavor`
+  /// that the desktop projects do not handle.
+  String _flavorDartDefineAndTargetOption(String flavor) {
+    return ' --dart-define=$envFlavorKey=${shellArgument(flavor)}'
+        ' --target ${shellArgument(_getTargetEntryPoint(flavor: flavor))}';
   }
 
   /// Build
@@ -183,7 +189,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   String getAabPath({String? module}) {
     return _getAndroidBuiltObjectPath(
       flavor: flavor,
-      module: module,
+      module: module ?? this.module,
       extension: 'aab',
       folder: 'bundle',
       useFlavorToPath: true,
@@ -219,7 +225,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
       }
       return objectFile;
     } else {
-      return join(buildTop, 'release', 'app-release.$extension');
+      return join(buildTop, 'release', '$module-release.$extension');
     }
   }
 
@@ -257,12 +263,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   Future<void> buildHostOnly({bool? create}) async {
     await createHostProject(force: create);
     await generateVersionIfNeeded();
-    await buildProject(
-      path,
-      platform: buildPlatformCurrent,
-      flavor: flavor,
-      target: flavor == null ? null : _getTargetEntryPoint(flavor: flavor),
-    );
+    await Shell().cd(path).run(flutterAppFlavorHostBuildCommand(this));
   }
 
   /// Copy the built host (desktop) release to the deploy folder
@@ -302,11 +303,7 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     sb.write(' --debug');
     var flavor = this.flavor;
     if (flavor != null) {
-      // No --flavor here, desktop projects don't handle it.
-      sb.write(
-        ' --dart-define=$envFlavorKey=${shellArgument(flavor)}'
-        ' --target ${shellArgument(_getTargetEntryPoint(flavor: flavor))}',
-      );
+      sb.write(_flavorDartDefineAndTargetOption(flavor));
     }
     await shell.run('flutter run$sb');
   }
@@ -508,6 +505,17 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
       stderr.writeln('No android device found');
     }
   }
+}
+
+/// The `flutter build <host platform>` command line of [builder], a release
+/// build for the current desktop platform.
+///
+/// A flavor gets its dart define and its entry point, like `runHost`, but no
+/// `--flavor` that the desktop projects do not handle.
+String flutterAppFlavorHostBuildCommand(FlutterAppFlavorBuilder builder) {
+  var flavor = builder.flavor;
+  return 'flutter build $buildPlatformCurrent'
+      '${flavor == null ? '' : builder._flavorDartDefineAndTargetOption(flavor)}';
 }
 
 /// Convenient builder.

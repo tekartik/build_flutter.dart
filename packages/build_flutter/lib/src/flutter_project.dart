@@ -47,9 +47,9 @@ class FlutterProject {
     String? buildType,
   }) {
     this.flavors = flavors ?? [];
-    this.buildPlatform = buildPlatformCurrent;
+    this.buildPlatform = buildPlatform ?? buildPlatformCurrent;
     this.androidModule = androidModule ?? defaultAppAndroidModule;
-    this.buildType = buildTypeRelease;
+    this.buildType = buildType ?? buildTypeRelease;
     this.path = toNativePath(path);
   }
 
@@ -92,10 +92,13 @@ class FlutterProject {
     required String subcommand,
     String? target,
   }) async {
-    /// Recreate and build a project
-    await shell.run('''
-    flutter build $subcommand${target != null ? ' --target ${shellArgument(target)}' : ''}${hasFlavors ? ' --flavor $flavor' : ''}
-    ''');
+    await shell.run(
+      flutterProjectAndroidBuildCommand(
+        this,
+        subcommand: subcommand,
+        target: target,
+      ),
+    );
   }
 
   /// build/app/outputs
@@ -150,6 +153,30 @@ class FlutterProject {
   String getAbsolutePathFromRelative(String relative) {
     return join(getAbsolutePath(), relative);
   }
+}
+
+/// The `flutter build <subcommand>` command line of [project] (`apk` or
+/// `appbundle`), for its [FlutterProject.buildType] and its single flavor.
+///
+/// Throws an [UnsupportedError] when [project] has more than one flavor.
+String flutterProjectAndroidBuildCommand(
+  FlutterProject project, {
+  required String subcommand,
+  String? target,
+}) {
+  var flavors = project.flavors;
+  if (flavors.length > 1) {
+    throw UnsupportedError(
+      'A single flavor can be built, found ${flavors.join(', ')}',
+    );
+  }
+  var buildType = project.buildType;
+  return [
+    'flutter build $subcommand',
+    if (buildType != buildTypeRelease) ' --$buildType',
+    if (target != null) ' --target ${shellArgument(target)}',
+    if (flavors.isNotEmpty) ' --flavor ${shellArgument(flavors.single)}',
+  ].join();
 }
 
 String _camelCaseWord(String word) {
