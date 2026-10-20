@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fs_shim/utils/path.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
@@ -153,6 +155,84 @@ class FlutterProject {
   String getAbsolutePathFromRelative(String relative) {
     return join(getAbsolutePath(), relative);
   }
+
+  /// Force re-creating a project for [platform] (defaults to [buildPlatform]),
+  /// optionally using [template].
+  ///
+  /// Deletes the `<path>/<platform>` directory first, then runs
+  /// `flutter create` and applies [runCreateWorkarounds].
+  Future<void> createProject({String? platform, String? template}) async {
+    platform ??= buildPlatform;
+
+    // Delete platform directory
+    await deleteDir(join(path, platform));
+    // Create directory
+    await Directory(path).create(recursive: true);
+
+    await runCreateWorkarounds(() async {
+      await shell.run(
+        flutterProjectCreateCommand(
+          this,
+          platform: platform,
+          template: template,
+        ),
+      );
+    });
+  }
+
+  /// Alias for [createProject].
+  Future<void> create({String? platform, String? template}) =>
+      createProject(platform: platform, template: template);
+
+  /// Run [action] (typically `flutter create`) and apply post-create
+  /// workarounds on an existing project.
+  ///
+  /// If the project already existed (`lib/main.dart` present before [action]):
+  /// - deletes `test/widget_test.dart` if it did not exist before and was
+  ///   created (and removes `test/` if it did not exist before and is empty)
+  /// - deletes `.metadata` if it did not exist before and was created
+  Future<void> runCreateWorkarounds(Future<void> Function() action) async {
+    var mainDartFile = File(join(path, 'lib', 'main.dart'));
+    var mainDartExisted = mainDartFile.existsSync();
+    var testDir = Directory(join(path, 'test'));
+    var testDirExisted = testDir.existsSync();
+    var widgetTestFile = File(join(path, 'test', 'widget_test.dart'));
+    var widgetTestExisted = widgetTestFile.existsSync();
+    var metadataFile = File(join(path, '.metadata'));
+    var metadataExisted = metadataFile.existsSync();
+
+    await action();
+
+    if (mainDartExisted) {
+      if (!widgetTestExisted && widgetTestFile.existsSync()) {
+        await deleteFile(widgetTestFile.path);
+        if (!testDirExisted &&
+            testDir.existsSync() &&
+            testDir.listSync().isEmpty) {
+          await deleteDir(testDir.path);
+        }
+      }
+      if (!metadataExisted && metadataFile.existsSync()) {
+        await deleteFile(metadataFile.path);
+      }
+    }
+  }
+}
+
+/// The `flutter create` command line of [project], for [platform]
+/// (defaults to [FlutterProject.buildPlatform]) and optional [template].
+String flutterProjectCreateCommand(
+  FlutterProject project, {
+  String? platform,
+  String? template,
+}) {
+  platform ??= project.buildPlatform;
+  return [
+    'flutter create',
+    if (template != null) ' --template ${shellArgument(template)}',
+    ' --platforms ${shellArgument(platform)}',
+    ' .',
+  ].join();
 }
 
 /// The `flutter build <subcommand>` command line of [project] (`apk` or

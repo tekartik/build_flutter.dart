@@ -233,12 +233,15 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   ///
   /// By default the project is only created if the platform folder does not
   /// exist yet. Set [force] to delete and re-create it.
-  Future<void> createHostProject({bool? force}) async {
+  Future<void> createHostProject({bool? force, String? template}) async {
     var platform = buildPlatformCurrent;
     if (!(force ?? false) && hasPlatformProject(path, platform: platform)) {
       return;
     }
-    await createProject(path, platform: platform);
+    await FlutterProject(
+      path,
+      buildPlatform: platform,
+    ).createProject(template: template);
   }
 
   /// Host (desktop) deploy path (folder), `deploy/linux`, `deploy/windows`,

@@ -290,13 +290,16 @@ void menuFlutterAppContent({
   menu('project', () {
     item('create current platform project ($buildPlatformCurrent)', () async {
       if (await checkFlutterSupported()) {
-        await createProject(appPath);
+        await builder.defaultFlavorBuilder.createHostProject(force: true);
       }
     });
     for (var platform in buildHostSupportedPlatforms) {
       item('create platform project ($platform)', () async {
         if (await checkFlutterSupported()) {
-          await createProject(appPath, platform: platform);
+          await FlutterProject(
+            appPath,
+            buildPlatform: platform,
+          ).createProject();
         }
       });
     }

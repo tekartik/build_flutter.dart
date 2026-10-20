@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dev_build/build_support.dart';
 import 'package:path/path.dart';
 import 'package:process_run/shell.dart';
+import 'package:tekartik_build_flutter/flutter_project.dart';
 import 'package:tekartik_build_flutter/src/import.dart';
 
 import 'build_flutter_common.dart';
@@ -102,20 +103,15 @@ bool hasPlatformProject(String path, {String? platform}) {
 }
 
 /// Force re-creating a project
-Future<void> createProject(String path, {String? platform}) async {
-  platform ??= buildPlatformCurrent;
-  var shell = Shell(workingDirectory: path);
-
-  // Delete platform directory
-  await deleteDir(join(path, platform));
-  // Create directory
-  await Directory(path).create(recursive: true);
-
-  if (buildPlatformsDesktopAll.contains(platform)) {
-    await shell.run('flutter config --enable-$platform-desktop');
-  }
-
-  await shell.run('flutter create --platforms $platform .');
+Future<void> createProject(
+  String path, {
+  String? platform,
+  String? template,
+}) async {
+  await FlutterProject(
+    path,
+    buildPlatform: platform,
+  ).createProject(template: template);
 }
 
 /// Find the macOS app bundle (`my_app.app`) in [dirPath], null if none.
@@ -268,10 +264,11 @@ Future<void> buildProject(
 Future<void> createProjectAndCheckoutFromGit(
   String path, {
   String? platform,
+  String? template,
 }) async {
   platform ??= buildPlatformCurrent;
 
-  await createProject(path, platform: platform);
+  await createProject(path, platform: platform, template: template);
 
   await checkoutFromGit(path, platform: platform);
 }
