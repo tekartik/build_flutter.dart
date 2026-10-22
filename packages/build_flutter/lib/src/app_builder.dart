@@ -93,43 +93,43 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   /// Aabs deploy path (folder
   String get aabsDeployPath => appBuilder.aabsDeployPath;
 
-  String _getTargetEntryPoint({required String? flavor}) {
-    if (flavor != null) {
-      var entryPoint = 'lib/main_$flavor.dart';
-      if (File(join(path, entryPoint)).existsSync()) {
-        return entryPoint;
-      }
-    }
-    return 'lib/main.dart';
-  }
-
-  /// Get flutter target option
-  String getFlutterTargetOption({String? flavor}) {
+  /// Get flutter target option: `--flavor`, its dart define and the entry
+  /// point of a build for [platform] (see [flutterProjectEntryPoint],
+  /// `lib/main_<flavor>.dart` then `lib/main_<platform>.dart`).
+  ///
+  /// Empty without flavor nor entry point other than `lib/main.dart`.
+  String getFlutterTargetOption({String? flavor, String? platform}) {
     var localFlavor = flavor ?? this.flavor;
-    if (localFlavor == null) {
-      return '';
+    return '${localFlavor == null ? '' : ' --flavor ${shellArgument(localFlavor)}'}'
+        '${_flavorDartDefineAndTargetOption(localFlavor, platform: platform)}';
+  }
+
+  /// The flavor dart define and the entry point of a build for [platform],
+  /// without `--flavor` that the desktop projects do not handle.
+  ///
+  /// A flavor without an entry point of its own builds `lib/main.dart`
+  /// explicitly, no option at all otherwise (the flutter default).
+  String _flavorDartDefineAndTargetOption(String? flavor, {String? platform}) {
+    var sb = StringBuffer();
+    if (flavor != null) {
+      sb.write(' --dart-define=$envFlavorKey=${shellArgument(flavor)}');
     }
-    return ' --flavor ${shellArgument(localFlavor)}'
-        '${_flavorDartDefineAndTargetOption(localFlavor)}';
+    var entryPoint =
+        flutterProjectEntryPoint(path, platform: platform, flavor: flavor) ??
+        (flavor == null ? null : 'lib/main.dart');
+    if (entryPoint != null) {
+      sb.write(' --target ${shellArgument(entryPoint)}');
+    }
+    return sb.toString();
   }
 
-  /// The flavor dart define and the flavor entry point, without `--flavor`
-  /// that the desktop projects do not handle.
-  String _flavorDartDefineAndTargetOption(String flavor) {
-    return ' --dart-define=$envFlavorKey=${shellArgument(flavor)}'
-        ' --target ${shellArgument(_getTargetEntryPoint(flavor: flavor))}';
-  }
-
-  /// Build
+  /// Build (`apk`, `appbundle`, `ipa`...), the entry point of its platform
+  /// when present (`lib/main_android.dart`, `lib/main_ios.dart`, see
+  /// [flutterProjectEntryPoint]).
   Future<void> build(String buildSubCommand) async {
     await generateVersionIfNeeded();
     var shell = Shell().cd(path);
-    var sb = StringBuffer(buildSubCommand);
-    if (flavor != null) {
-      sb.write(getFlutterTargetOption(flavor: flavor));
-    }
-    //sb.write(' $');
-    await shell.run('flutter build $sb');
+    await shell.run(flutterAppFlavorBuildCommand(this, buildSubCommand));
   }
 
   /// Clean
@@ -304,10 +304,9 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     var sb = StringBuffer();
     sb.write(_deviceIdArgs(buildPlatformCurrent));
     sb.write(' --debug');
-    var flavor = this.flavor;
-    if (flavor != null) {
-      sb.write(_flavorDartDefineAndTargetOption(flavor));
-    }
+    sb.write(
+      _flavorDartDefineAndTargetOption(flavor, platform: buildPlatformCurrent),
+    );
     await shell.run('flutter run$sb');
   }
 
@@ -510,16 +509,26 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
   }
 }
 
+/// The `flutter build <buildSubCommand>` command line of [builder] (`apk`,
+/// `appbundle`, `ipa`...): its flavor and the entry point of the platform of
+/// [buildSubCommand] (see [flutterBuildSubCommandPlatform]).
+String flutterAppFlavorBuildCommand(
+  FlutterAppFlavorBuilder builder,
+  String buildSubCommand,
+) =>
+    'flutter build $buildSubCommand'
+    '${builder.getFlutterTargetOption(platform: flutterBuildSubCommandPlatform(buildSubCommand))}';
+
 /// The `flutter build <host platform>` command line of [builder], a release
 /// build for the current desktop platform.
 ///
-/// A flavor gets its dart define and its entry point, like `runHost`, but no
-/// `--flavor` that the desktop projects do not handle.
-String flutterAppFlavorHostBuildCommand(FlutterAppFlavorBuilder builder) {
-  var flavor = builder.flavor;
-  return 'flutter build $buildPlatformCurrent'
-      '${flavor == null ? '' : builder._flavorDartDefineAndTargetOption(flavor)}';
-}
+/// A flavor gets its dart define, like `runHost`, but no `--flavor` that the
+/// desktop projects do not handle. The entry point is the one of the flavor,
+/// then `lib/main_<host platform>.dart`, then `lib/main_host.dart` (see
+/// [flutterProjectEntryPoint]).
+String flutterAppFlavorHostBuildCommand(FlutterAppFlavorBuilder builder) =>
+    'flutter build $buildPlatformCurrent'
+    '${builder._flavorDartDefineAndTargetOption(builder.flavor, platform: buildPlatformCurrent)}';
 
 /// Convenient builder.
 class FlutterAppBuilder implements CommonAppBuilder {

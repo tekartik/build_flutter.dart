@@ -54,8 +54,19 @@ folder with versioned names, then upload the bundle to the Play Store.
 * Flavor conventions applied by `FlutterAppFlavorBuilder`
   (`getFlutterTargetOption()`): the flutter command gets
   `--flavor <flavor> --dart-define=<envFlavorKey>="<flavor>"
-  --target lib/main_<flavor>.dart` (falling back to `lib/main.dart` when that
-  entry point does not exist). `envFlavorKey` is the constant of
+  --target lib/main_<flavor>.dart` (falling back to the platform entry point,
+  then to `lib/main.dart`, when that entry point does not exist).
+* Platform entry points (`flutterProjectEntryPoint(path, {platform,
+  flavor})`, `package:tekartik_build_flutter/build_flutter.dart`): without a
+  flavor entry point, a build uses `lib/main_android.dart` (`apk`,
+  `appbundle`), `lib/main_ios.dart` (`ipa`), `lib/main_web.dart` (web, in
+  tekartik_flutter_build), and on desktop (`buildHost`, `runHost`)
+  `lib/main_<host platform>.dart` (`main_linux`, `main_macos`,
+  `main_windows`) then `lib/main_host.dart`, when present; no `--target`
+  otherwise (`lib/main.dart`). `flutterProjectEntryPointCandidates` lists
+  them in order, `flutterBuildSubCommandPlatform('apk')` maps a sub command
+  to its platform. `run(deviceId:)` does not know the device platform and
+  only uses the flavor entry point. `envFlavorKey` is the constant of
   `tekartik_built_flutter` (`package:tekartik_built_flutter/constant.dart`);
   read the flavor back at runtime with
   `String.fromEnvironment(envFlavorKey)`. `flavorName` is `flavor ?? 'main'`.

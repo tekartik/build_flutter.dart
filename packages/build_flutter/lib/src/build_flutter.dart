@@ -7,6 +7,7 @@ import 'package:tekartik_build_flutter/flutter_project.dart';
 import 'package:tekartik_build_flutter/src/import.dart';
 
 import 'build_flutter_common.dart';
+import 'entry_point.dart';
 
 var _linuxExeDir = join('build', 'linux', 'x64', 'release', 'bundle');
 var _windowsExeDir = join('build', 'windows', 'x64', 'runner', 'Release');
@@ -233,7 +234,8 @@ Future<String> getBuildProjectAppFilename(String path) async {
   return appName;
 }
 
-/// Recreate and build a project
+/// Recreate and build a project, [target] being the entry point of the
+/// platform when present by default (see [flutterProjectEntryPoint]).
 Future<void> buildProject(
   String path, {
   String? target,
@@ -242,6 +244,7 @@ Future<void> buildProject(
 }) async {
   var shell = Shell(workingDirectory: path);
   platform ??= buildPlatformCurrent;
+  target ??= flutterProjectEntryPoint(path, platform: platform);
   var subcommandApk = 'apk';
   var subcommandIpa = 'ipa';
   String? subcommand;

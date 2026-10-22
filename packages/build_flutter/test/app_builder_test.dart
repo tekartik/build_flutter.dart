@@ -8,7 +8,7 @@ import 'package:process_run/shell.dart' show stringToArguments;
 import 'package:tekartik_build_flutter/app_builder.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_build_flutter/src/app_builder.dart'
-    show flutterAppFlavorHostBuildCommand;
+    show flutterAppFlavorBuildCommand, flutterAppFlavorHostBuildCommand;
 import 'package:test/test.dart';
 
 FlutterAppBuilder _builder({String? module, List<String>? flavors}) =>
@@ -193,6 +193,112 @@ void main() {
       } finally {
         await dir.delete(recursive: true);
       }
+    });
+
+    test('platform entry points', () async {
+      var dir = await Directory.systemTemp.createTemp('build_flutter_test');
+      Future<void> create(String entryPoint) =>
+          File(join(dir.path, entryPoint)).create(recursive: true);
+      try {
+        FlutterAppFlavorBuilder builder([String? flavor]) => FlutterAppBuilder(
+          context: FlutterAppContext(
+            path: dir.path,
+            buildOptions: FlutterAppBuildOptions(flavors: [?flavor]),
+          ),
+        ).flavorBuilder(flavor);
+        String targetOf(String command) {
+          var arguments = stringToArguments(command);
+          var index = arguments.indexOf('--target');
+          return index < 0 ? 'none' : arguments[index + 1];
+        }
+
+        // Nothing: the flutter default.
+        expect(
+          flutterAppFlavorBuildCommand(builder(), 'apk'),
+          'flutter build apk',
+        );
+        expect(
+          flutterAppFlavorHostBuildCommand(builder()),
+          'flutter build $buildPlatformCurrent',
+        );
+
+        await create('lib/main_android.dart');
+        await create('lib/main_ios.dart');
+        expect(
+          targetOf(flutterAppFlavorBuildCommand(builder(), 'apk')),
+          'lib/main_android.dart',
+        );
+        expect(
+          targetOf(flutterAppFlavorBuildCommand(builder(), 'appbundle')),
+          'lib/main_android.dart',
+        );
+        expect(
+          targetOf(flutterAppFlavorBuildCommand(builder(), 'ipa')),
+          'lib/main_ios.dart',
+        );
+
+        // Desktop: main_host, then main_<host platform> first.
+        expect(targetOf(flutterAppFlavorHostBuildCommand(builder())), 'none');
+        await create('lib/main_host.dart');
+        expect(
+          targetOf(flutterAppFlavorHostBuildCommand(builder())),
+          'lib/main_host.dart',
+        );
+        await create('lib/main_$buildPlatformCurrent.dart');
+        expect(
+          targetOf(flutterAppFlavorHostBuildCommand(builder())),
+          'lib/main_$buildPlatformCurrent.dart',
+        );
+
+        // The flavor entry point first, the platform one otherwise.
+        expect(
+          stringToArguments(
+            flutterAppFlavorBuildCommand(builder('dev'), 'apk'),
+          ),
+          [
+            'flutter',
+            'build',
+            'apk',
+            '--flavor',
+            'dev',
+            '--dart-define=tekartikAppBuildFlavor=dev',
+            '--target',
+            'lib/main_android.dart',
+          ],
+        );
+        await create('lib/main_dev.dart');
+        expect(
+          targetOf(flutterAppFlavorBuildCommand(builder('dev'), 'apk')),
+          'lib/main_dev.dart',
+        );
+      } finally {
+        await dir.delete(recursive: true);
+      }
+    });
+  });
+
+  group('entry point', () {
+    test('candidates', () {
+      expect(flutterProjectEntryPointCandidates(platform: 'web'), [
+        'lib/main_web.dart',
+      ]);
+      expect(flutterProjectEntryPointCandidates(platform: 'linux'), [
+        'lib/main_linux.dart',
+        'lib/main_host.dart',
+      ]);
+      expect(
+        flutterProjectEntryPointCandidates(platform: 'android', flavor: 'dev'),
+        ['lib/main_dev.dart', 'lib/main_android.dart'],
+      );
+      expect(flutterProjectEntryPointCandidates(), isEmpty);
+    });
+    test('sub command platform', () {
+      expect(flutterBuildSubCommandPlatform('apk'), 'android');
+      expect(flutterBuildSubCommandPlatform('appbundle'), 'android');
+      expect(flutterBuildSubCommandPlatform('ipa'), 'ios');
+      expect(flutterBuildSubCommandPlatform('ios'), 'ios');
+      expect(flutterBuildSubCommandPlatform('web'), 'web');
+      expect(flutterBuildSubCommandPlatform('linux'), 'linux');
     });
   });
 }

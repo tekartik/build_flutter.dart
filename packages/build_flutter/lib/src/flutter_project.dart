@@ -98,7 +98,10 @@ class FlutterProject {
       flutterProjectAndroidBuildCommand(
         this,
         subcommand: subcommand,
-        target: target,
+        // `lib/main_android.dart` when present.
+        target:
+            target ??
+            flutterProjectEntryPoint(path, platform: buildPlatformAndroid),
       ),
     );
   }

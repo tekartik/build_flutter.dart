@@ -69,6 +69,11 @@ publish pipeline is in
 * `buildProject(path, {target, platform, flavor})` runs `flutter build` with
   the right subcommand: `apk` for android, `ipa` for ios, the platform name
   otherwise (`web`, `linux`...). `--flavor` is only passed for android.
+  Without `target`, the platform entry point when present
+  (`lib/main_android.dart`, `lib/main_ios.dart`, `lib/main_web.dart`,
+  `lib/main_<host>.dart` then `lib/main_host.dart`, see
+  `flutterProjectEntryPoint`); `FlutterProject.buildAndroidApk` /
+  `buildAppBundle` default to `lib/main_android.dart` the same way.
 * Locating the result of a desktop build: `platformExeDir` is the
   host-specific release folder (`build/linux/x64/release/bundle`,
   `build/windows/x64/runner/Release`, `build/macos/Build/Products/Release`),
