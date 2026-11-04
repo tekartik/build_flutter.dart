@@ -6,6 +6,7 @@ import 'package:process_run/shell.dart';
 import 'package:tekartik_android_utils/build_utils.dart';
 import 'package:tekartik_build_flutter/build_flutter.dart';
 import 'package:tekartik_common_utils/list_utils.dart';
+import 'package:tekartik_prj_tktools/dart_run.dart' show flutterCreatePlatforms;
 
 import 'import.dart';
 
@@ -162,8 +163,12 @@ class FlutterProject {
   /// Force re-creating a project for [platform] (defaults to [buildPlatform]),
   /// optionally using [template].
   ///
-  /// Deletes the `<path>/<platform>` directory first, then runs
-  /// `flutter create` and applies [runCreateWorkarounds].
+  /// Deletes the `<path>/<platform>` directory first. In an existing project
+  /// (a `pubspec.yaml`), only the platform folder is created (prj_tktools
+  /// `flutterCreatePlatforms`: everything else `flutter create` adds,
+  /// `lib/main.dart`, `test/widget_test.dart`, `.idea/`, `<name>.iml`,
+  /// `.metadata`..., is deleted); otherwise `flutter create` creates the
+  /// project (see [flutterProjectCreateCommand]).
   Future<void> createProject({String? platform, String? template}) async {
     platform ??= buildPlatform;
 
@@ -172,7 +177,14 @@ class FlutterProject {
     // Create directory
     await Directory(path).create(recursive: true);
 
-    await runCreateWorkarounds(() async {
+    if (File(join(path, 'pubspec.yaml')).existsSync()) {
+      await flutterCreatePlatforms(
+        path,
+        [platform],
+        shell: shell,
+        template: template,
+      );
+    } else {
       await shell.run(
         flutterProjectCreateCommand(
           this,
@@ -180,7 +192,7 @@ class FlutterProject {
           template: template,
         ),
       );
-    });
+    }
   }
 
   /// Alias for [createProject].
@@ -189,6 +201,8 @@ class FlutterProject {
 
   /// Run [action] (typically `flutter create`) and apply post-create
   /// workarounds on an existing project.
+  ///
+  /// [createProject] no longer uses it (it keeps the platform folder only).
   ///
   /// If the project already existed (`lib/main.dart` present before [action]):
   /// - deletes `test/widget_test.dart` if it did not exist before and was

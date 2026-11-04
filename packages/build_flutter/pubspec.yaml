@@ -26,6 +26,12 @@ dependencies:
       url: https://github.com/tekartik/common_utils.dart
     version: '>=0.13.2'
   dev_build: ">=1.1.7+3"
+  # flutterCreatePlatforms: a platform folder created alone.
+  tekartik_prj_tktools:
+    git:
+      url: https://github.com/tekartikprj/tktools
+      path: packages/prj_tktools
+    version: '>=1.0.2'
   tekartik_android_utils:
     git:
       url: https://github.com/tekartik/android_utils.dart
