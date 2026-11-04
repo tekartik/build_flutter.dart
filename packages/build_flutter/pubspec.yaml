@@ -29,7 +29,7 @@ dependencies:
   # flutterCreatePlatforms: a platform folder created alone.
   tekartik_prj_tktools:
     git:
-      url: https://github.com/tekartikprj/tktools
+      url: https://github.com/tekartikprj/tktools.git
       path: packages/prj_tktools
     version: '>=1.0.2'
   tekartik_android_utils:
