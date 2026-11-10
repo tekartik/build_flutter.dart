@@ -76,12 +76,17 @@ folder with versioned names, then upload the bundle to the Play Store.
   `clean()` (`flutter clean`, same as top-level `flutterProjectClean(path)`),
   and `run({String? deviceId, bool? release})` for `flutter run`. Every
   `build*` first calls `generateVersionIfNeeded()`.
-* Artifact paths are computed from the gradle naming convention (relative to
-  the app `path`, no filesystem lookup). With flavor `dev` and module `app`:
-  `getApkPath()` → `build/app/outputs/apk/dev/release/app-dev-release.apk`,
-  `getAabPath()` → `build/app/outputs/bundle/devRelease/app-dev-release.aab`;
-  with no flavor: `build/app/outputs/apk/release/app-release.apk` and
-  `build/app/outputs/bundle/release/app-release.aab`.
+* Artifact paths are computed from the gradle naming convention (no
+  filesystem lookup) and start with the app `path`, i.e. they are relative to
+  the current directory when `path` is relative. With flavor `dev` and module
+  `app`: `getApkPath()` →
+  `<path>/build/app/outputs/apk/dev/release/app-dev-release.apk`,
+  `getAabPath()` →
+  `<path>/build/app/outputs/bundle/devRelease/app-dev-release.aab`; with no
+  flavor: `<path>/build/app/outputs/apk/release/app-release.apk` and
+  `<path>/build/app/outputs/bundle/release/app-release.aab`. The deploy paths
+  (`apksDeployPath`, `aabsDeployPath`, `getApkDeployedPath()`) are relative
+  to the app `path` instead.
   `FlutterAppFlavorBuilder.flavorToPath('dev-release')` is the
   lower-camel-case join used for the bundle folder (`'devRelease'`).
 * Deploy: `buildAndroidAndCopy()` builds apk + aab, reads the apk info and

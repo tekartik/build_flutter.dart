@@ -432,10 +432,10 @@ class FlutterAppFlavorBuilder implements CommonAppBuilder {
     return basename;
   }
 
+  /// Copies [src], a path relative to the current directory (what
+  /// [getApkPath] and [getAabPath] return, [path] included), to [dst], a
+  /// path relative to the project (the deploy paths).
   Future<void> _copyFile(String src, String dst) async {
-    if (!isAbsolute(src)) {
-      src = join(path, src);
-    }
     if (!isAbsolute(dst)) {
       dst = join(path, dst);
     }

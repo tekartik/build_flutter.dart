@@ -234,8 +234,10 @@ Future<String> getBuildProjectAppFilename(String path) async {
   return appName;
 }
 
-/// Recreate and build a project, [target] being the entry point of the
-/// platform when present by default (see [flutterProjectEntryPoint]).
+/// Builds the project at [path] (`flutter build apk`, `ipa` or the platform
+/// name), [target] being the entry point of the platform when present by
+/// default (see [flutterProjectEntryPoint]); `--flavor` [flavor] on android
+/// only.
 Future<void> buildProject(
   String path, {
   String? target,

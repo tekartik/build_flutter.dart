@@ -54,18 +54,22 @@ publish pipeline is in
   `[<host>, android, web]`, macos → `[macos, android, ios, web]`.
   Prefer `getBuildHostSupportedPlatforms()` over the deprecated
   `buildSupportedPlatforms`.
-* `createProject(path, {platform})` is destructive by design: it deletes
-  `<path>/<platform>`, creates `path`, runs `flutter config
-  --enable-<platform>-desktop` for desktop platforms and then
-  `flutter create --platforms <platform> .`. `platform` defaults to
-  `buildPlatformCurrent`. Guard it with `hasPlatformProject(path,
-  platform: ...)` when the project folder must be kept.
+* `createProject(path, {platform, template})` is destructive by design: it
+  deletes `<path>/<platform>`, creates `path`, then in an existing project
+  (a `pubspec.yaml`) creates the platform folder alone (`flutterCreatePlatforms`
+  of `tekartik_prj_tktools`: what else `flutter create` adds, `lib/main.dart`,
+  `test/widget_test.dart`, `.metadata`..., is removed or put back), otherwise
+  runs `flutter create [--template <template>] --platforms <platform> .`.
+  `platform` defaults to `buildPlatformCurrent`. Guard it with
+  `hasPlatformProject(path, platform: ...)` when the project folder must be
+  kept.
   `createProjectAndCheckoutFromGit(path, {platform})` does the same then
   `git checkout <platform>` in `path` (errors swallowed), which restores the
   committed platform files of a project that keeps them in git. The same thing
   is available as a CLI:
   `dart run tekartik_build_flutter:create_project_and_checkout_from_git [<dir>]
-  [-p <platform>] [--platforms linux,windows]`.
+  [-p <platform>] [--platforms linux,windows]` (`--help` prints the usage
+  only).
 * `buildProject(path, {target, platform, flavor})` runs `flutter build` with
   the right subcommand: `apk` for android, `ipa` for ios, the platform name
   otherwise (`web`, `linux`...). `--flavor` is only passed for android.
@@ -101,9 +105,11 @@ publish pipeline is in
   `buildAndroidApk({target})` and `buildAppBundle({target})` build, adding
   `--flavor` when a single flavor is declared (`flavor` is the single flavor
   or `null`, `hasFlavors` tells whether any was declared).
-  Caveat: the `buildPlatform` and `buildType` constructor arguments are
-  currently ignored — a `FlutterProject` is always
-  `buildPlatform: buildPlatformCurrent`, `buildType: buildTypeRelease`.
+  `buildType` (`buildTypeRelease` by default, or `buildTypeDebug`) sets the
+  paths (`app-debug.apk`, `bundle/debug/app-debug.aab`) and adds `--debug`
+  to the build; `buildPlatform` defaults to `buildPlatformCurrent` and is the
+  platform `createProject()` creates. These paths are relative to the
+  project, unlike the `FlutterAppFlavorBuilder` ones.
   `androidModule` defaults to `defaultAppAndroidModule` (`'app'`).
 * `initFlutterAndroidBuild({int? sdkVersion})` resolves the Android SDK build
   tools and initializes the environment; it returns `false` instead of
@@ -211,8 +217,6 @@ Future<void> main(List<String> args) async {
 
 * Calling `createProject` on an existing app without checking
   `hasPlatformProject`: the platform folder is deleted and regenerated.
-* Expecting `FlutterProject(..., buildType: buildTypeDebug)` to build debug:
-  the argument is ignored, only release paths are produced.
 * Reading a `FlutterDevice` field directly instead of through `.v`
   (`device.id` is a `CvField<String>`, `device.id.v` is the `String?`).
 * Assuming `buildPlatformCurrent` covers mobile: it is the desktop target of
