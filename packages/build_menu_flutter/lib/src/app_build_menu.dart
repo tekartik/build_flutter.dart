@@ -141,31 +141,39 @@ void menuFlutterAppFlavorContent({
       }
     });
   });
-  menu('host ($buildPlatformCurrent)', () {
-    enter(() async {
-      write('deploy path: ${flavorBuilder.hostDeployPath}');
-    });
-    item('build', () async {
-      await flavorBuilder.buildHost();
-    });
-    item('run', () async {
-      await flavorBuilder.runHost();
-    });
-    item('build and run', () async {
-      await flavorBuilder.buildHost();
-      await flavorBuilder.runHost();
-    });
-    item('build only (no copy to deploy)', () async {
-      await flavorBuilder.buildHostOnly();
-    });
-    item('copy built to deploy', () async {
-      await flavorBuilder.copyBuiltHostToDeploy();
-    });
-    item('create project, build and run', () async {
-      await flavorBuilder.buildHost(create: true);
-      await flavorBuilder.runHost();
-    });
-  });
+  // Declared next to the flavor menu: named after the flavor, if any, the
+  // host menus of the flavors would look the same otherwise.
+  var hostFlavor = flavorBuilder.flavor;
+  menu(
+    hostFlavor == null
+        ? 'host ($buildPlatformCurrent)'
+        : 'host ($buildPlatformCurrent, $hostFlavor)',
+    () {
+      enter(() async {
+        write('deploy path: ${flavorBuilder.hostDeployPath}');
+      });
+      item('build', () async {
+        await flavorBuilder.buildHost();
+      });
+      item('run', () async {
+        await flavorBuilder.runHost();
+      });
+      item('build and run', () async {
+        await flavorBuilder.buildHost();
+        await flavorBuilder.runHost();
+      });
+      item('build only (no copy to deploy)', () async {
+        await flavorBuilder.buildHostOnly();
+      });
+      item('copy built to deploy', () async {
+        await flavorBuilder.copyBuiltHostToDeploy();
+      });
+      item('create project, build and run', () async {
+        await flavorBuilder.buildHost(create: true);
+        await flavorBuilder.runHost();
+      });
+    },
+  );
 }
 
 /// Menu flutter app publish

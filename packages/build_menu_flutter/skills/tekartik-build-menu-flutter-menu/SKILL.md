@@ -27,7 +27,7 @@ bundled `fbm` command.
       git:
         url: https://github.com/tekartik/build_flutter.dart
         path: packages/build_menu_flutter
-      version: '>=0.3.0'
+      version: '>=0.4.0'
   ```
   Or use it without touching the app pubspec: activate the `fbm` executable
   from a checkout (`flutter pub global activate -s path .` in
@@ -50,9 +50,12 @@ bundled `fbm` command.
   separately in a script that already imports `app_build_menu.dart`.
 * A menu script is a `main` that calls `mainMenuConsole(arguments, () { ... })`
   and declares content inside the callback. Put it in `tool/` (e.g.
-  `tool/build_menu.dart`) and run it with `dart run tool/build_menu.dart`;
-  passing item names as arguments runs them without the interactive prompt
-  (that is how CI reuses the menu).
+  `tool/build_menu.dart`) and run it with `dart run tool/build_menu.dart`.
+  Items are picked by their number (or their `cmd:` shortcut), never by name:
+  numbers given as arguments run first, in order, then the menu waits for
+  input; `.` goes back (exits at the top), `?` lists the items again
+  (`dart run tool/build_menu.dart 2 0 .`). Adding an item before others
+  shifts their numbers in such scripts.
 * `menuAppContent({String path = '.', List<String>? flavors,
   AndroidPublisherClient? androidPublisherClient})` is the one-liner that
   builds the whole menu (project/flavors/build/run/web sections) from a path.
@@ -67,8 +70,10 @@ bundled `fbm` command.
 * `menuFlutterAppFlavorContent({required FlutterAppFlavorBuilder
   flavorBuilder, AndroidPublisherClient? androidPublisherClient})` is the
   per-flavor menu (run on device, clean, ios ipa, android aab/apk/sha1/apkinfo
-  /copy, host desktop build/run/deploy). Call it directly to build a menu
-  around a single flavor builder.
+  /copy) and, next to it, the host desktop menu (build/run/copy to
+  `deploy/<platform>-<flavor>`), named `host (<platform>, <flavor>)` or
+  `host (<platform>)` without flavor. Call it directly to build a menu around
+  a single flavor builder.
 * `menuFlutterAppFlavorPublish({required FlutterAppFlavorBuilder
   flavorBuilder, required AndroidPublisherClient client})` is the Play Store
   submenu: list bundles, list tracks, bundles per track, promote internal to
